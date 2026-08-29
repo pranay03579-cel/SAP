@@ -1,341 +1,176 @@
 # SAP Sentinel — Technical System Architecture
 
-**Document Version**: 1.1.0 (Phase 4A — SAP-Compatible Mock Integration Layer)
-**Target Platform**: SAP HackFest 2026 (North Region — Chandigarh University)
+**Document Version**: 2.0.0 (Phase 10 — Reality Alignment)  
+**Target Platform**: SAP HackFest 2026 (North Region — Chandigarh University)  
 **System Classification**: AI-Powered Autonomous Disruption Recovery & Inclusive Workforce Control Tower
 
 ---
 
-## 🏗️ High-Level System Architecture
+## 📌 Architecture Reality & Current Implementation Status
 
-The SAP Sentinel architecture is designed around four core layers:
-1. **Presentation & Human-in-the-Loop (HITL) Layer** (Enterprise Control Tower UI)
-2. **Multi-Agent Orchestration & Blackboard Engine** (Autonomous Sensing, Reasoning, and Optimization)
-3. **Domain Schemas & State Ledger** (Immutable Event Store & Strict Pydantic Data Contracts)
-4. **SAP Adapter Abstraction Layer** (S/4HANA, SuccessFactors, Ariba, Event Mesh)
+> **CURRENT STATUS**: The repository is an operational **TypeScript / React** application running locally using **deterministic Mock Providers**.
+>
+> All external enterprise touchpoints are encapsulated behind clean TypeScript provider interfaces (`src/providers/interfaces.ts`). Real SAP integrations (S/4HANA, SuccessFactors, Logistics Business Network, Event Mesh) are **FUTURE / NOT CURRENTLY CONNECTED** adapter implementations that will plug into this exact interface seam once official credentials and endpoints are configured.
+
+---
+
+## 🏗️ Actual System Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────┐
 │                   ENTERPRISE CONTROL TOWER UI (React + TypeScript)                │
 │  ┌──────────────────────┬──────────────────────┬──────────────────────────────┐  │
-│  │ Disruption Radar &   │ Scenario Diff &      │ Inclusive Workforce Roster   │  │
-│  │ Network Topology Map │ Decision Studio      │ & Ergonomics Heatmap         │  │
+│  │ Executive Dashboard  │ Scenario Comparison  │ Inclusive Workforce View     │  │
+│  │ & 30-Sec Briefing    │ & 7-Score Breakdown  │ (Impact, JIT Training, Roster)│ │
 │  └──────────────────────┴──────────────────────┴──────────────────────────────┘  │
 │  ┌────────────────────────────────────────────────────────────────────────────┐  │
-│  │  Transparent Audit Ledger & Evidence Viewer (Zero Private CoT Exposure)    │  │
+│  │  Transparent 5-Agent Audit Ledger & Decision Trace Flowchart               │  │
 │  └────────────────────────────────────────────────────────────────────────────┘  │
 └────────────────────────────────────────┬─────────────────────────────────────────┘
-                                         │ REST / WebSocket API
+                                         │ In-Memory React State & Callback Dispatch
 ┌────────────────────────────────────────▼─────────────────────────────────────────┐
-│               MULTI-AGENT ORCHESTRATION & STATE MACHINE (FastAPI / Python)        │
+│               PIPELINE ORCHESTRATOR (`src/services/orchestrator.ts`)             │
 │                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────┐   │
 │   │           IMMUTABLE RECOVERY RUN CONTEXT (Append-Only Blackboard)         │   │
+│   │                 `Case.agentHistory.historyLedger: AgentExecution[]`      │   │
 │   └──────┬─────────────────┬─────────────────┬───────────────────┬───────────┘   │
 │          │                 │                 │                   │               │
 │          ▼                 ▼                 ▼                   ▼               │
 │   ┌─────────────┐   ┌─────────────┐   ┌──────────────┐   ┌───────────────┐       │
-│   │ Disruption  │   │ SupplyChain │   │  Inclusive   │   │  Mitigation   │       │
-│   │ Triage      │──►│ Impact &    │──►│  Workforce   │──►│  Synthesizer  │       │
-│   │ Agent       │   │ Sourcing    │   │  Agent       │   │  & Optimizer  │       │
-│   └─────────────┘   └─────────────┘   └──────────────┘   └───────┬───────┘       │
-│                                                                  │               │
-│                                                                  ▼               │
-│                                                          ┌───────────────┐       │
-│                                                          │ HITL Approval │       │
-│                                                          │ & SAP Commit  │       │
-│                                                          └───────┬───────┘       │
-└──────────────────────────────────────────────────────────────────┼───────────────┘
-                                                                   │
-┌──────────────────────────────────────────────────────────────────▼───────────────┐
-│                    SAP INTEGRATION & ADAPTER ABSTRACTION LAYER                   │
+│   │ Disruption  │──►│ SupplyChain │──►│  Workforce   │──►│  Recovery     │       │
+│   │ Agent       │   │ Impact Agent│   │  Agent       │   │  Adaptation   │       │
+│   └──────┬──────┘   └──────┬──────┘   └──────┬───────┘   │  Agent        │       │
+│          │                 │                 │           └───────┬───────┘       │
+│          │                 │                 │                   │               │
+│          │                 │                 │                   ▼               │
+│          │                 │                 │           ┌───────────────┐       │
+│          │                 │                 │           │ Decision      │       │
+│          │                 │                 │           │ Agent         │       │
+│          │                 │                 │           └───────┬───────┘       │
+│          │                 │                 │                   │               │
+│          │                 │                 │                   ▼               │
+│          │                 │                 │           ┌───────────────┐       │
+│          │                 │                 │           │ Human-in-Loop │       │
+│          │                 │                 │           │ Approval Gate │       │
+│          │                 │                 │           └───────┬───────┘       │
+└──────────┼─────────────────┼─────────────────┼───────────────────┼───────────────┘
+           │                 │                 │                   │
+┌──────────▼─────────────────▼─────────────────▼───────────────────▼───────────────┐
+│                    PROVIDER / ADAPTER INTERFACE LAYER                            │
+│                     (`src/providers/interfaces.ts`)                              │
 │                                                                                  │
-│   ┌─────────────────────────┐  ┌──────────────────────────┐  ┌────────────────┐  │
-│   │   SAP S/4HANA Adapter   │  │ SAP SuccessFactors Adapter│  │ SAP Event Mesh │  │
-│   │  (Inventory, PO, SO,    │  │ (Worker Profiles, Skills, │  │ (IoT / Sensor │  │
-│   │   BOM, Production Orders│  │  Accommodations, Shifts)  │  │  Disruptions) │  │
-│   └────────────┬────────────┘  └────────────┬─────────────┘  └───────┬────────┘  │
-│                │                            │                        │           │
-│                ▼                            ▼                        ▼           │
+│   ┌───────────────────────┐  ┌────────────────────────┐  ┌────────────────────┐  │
+│   │IDisruptionDataProvider│  │ISupplyChainDataProvider│  │IWorkforceData-     │  │
+│   │                       │  │                        │  │Provider            │  │
+│   └───────────┬───────────┘  └───────────┬────────────┘  └─────────┬──────────┘  │
+│               │                          │                         │             │
+│               ▼                          ▼                         ▼             │
 │   ┌───────────────────────────────────────────────────────────────────────────┐  │
-│   │  Pluggable Implementation: Mock Adapter Suite ◄──► Live SAP BTP (Future)  │  │
+│   │ITransportCapacityProvider (`src/providers/interfaces.ts`)                  │  │
+│   └───────────────────────────────────┬───────────────────────────────────────┘  │
+└───────────────────────────────────────┼──────────────────────────────────────────┘
+                                        │
+                                        ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                             PROVIDER IMPLEMENTATIONS                             │
+│                                                                                  │
+│   ┌───────────────────────────────────────────────────────────────────────────┐  │
+│   │ CURRENT (ACTIVE IN REPOSITORY): Deterministic Mock Providers              │  │
+│   │ • MockDisruptionProvider     (`src/providers/mock/mockDisruptionProvider`)│  │
+│   │ • MockSupplyChainProvider    (`src/providers/mock/mockSupplyChainProvider`)│  │
+│   │ • MockWorkforceProvider      (`src/providers/mock/mockWorkforceProvider`)  │  │
+│   │ • MockTransportCapacityProvider (`src/providers/mock/mockTransportProvider`)││
+│   └───────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                  │
+│   ┌───────────────────────────────────────────────────────────────────────────┐  │
+│   │ FUTURE (NOT CURRENTLY CONNECTED): Official SAP Providers                  │  │
+│   │ • SapEventMeshDisruptionProvider      [Future SAP Event Mesh]             │  │
+│   │ • SapS4HanaSupplyChainProvider        [Future SAP S/4HANA OData v4]       │  │
+│   │ • SapSuccessFactorsWorkforceProvider  [Future SAP SuccessFactors OData]   │  │
+│   │ • SapLbnTransportCapacityProvider     [Future SAP LBN / SAP TM OData]     │  │
 │   └───────────────────────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🤖 Multi-Agent Orchestration & Data Flow
+## 🤖 The Five-Agent Pipeline Flow & Contract Rules
 
-### The Blackboard Pattern
-To guarantee auditability, deterministic verification, and eliminate hallucinated race conditions, agents operate under a **Strict Blackboard Architecture**:
-1. Agents **read** from the shared immutable blackboard run context.
-2. Agents **append** structured findings, calculations, and recommendations.
-3. **No agent can overwrite or delete** data written by a preceding agent.
-4. If an agent disagrees with a prior finding, it writes a structured `Critique` or `AlternativeOption` block.
+### 1. Sequential Execution Flow
+The `PipelineOrchestrator` executes the five specialized agents in strict sequence:
+1. **Disruption Agent**: Queries `IDisruptionDataProvider` to sense physical road telemetry, weather severity, and corridor impassability duration.
+2. **Supply Chain Impact Agent**: Queries `ISupplyChainDataProvider` to identify stranded purchase orders, at-risk inventory, and hospital stockout windows.
+3. **Workforce Agent**: Queries `IWorkforceDataProvider` to evaluate worker availability, skills, certifications, fatigue caps, and inclusive accommodations.
+4. **Recovery Adaptation Agent**: Queries `ITransportCapacityProvider` to generate candidate multimodal recovery options (Air, Rail, Road bypass).
+5. **Decision Agent & Scoring Engine**: Evaluates all candidate scenarios across 7 weighted criteria to recommend the highest-scoring Pareto-optimal recovery plan.
 
-```
-Disruption Signal Ingested
-       │
-       ▼
-[Disruption Triage Agent]
-   ├─ Evaluates Signal Severity & Geo-Radius
-   └─ Appends: DisruptionAssessment (Affected Nodes, Material IDs, Severity)
-       │
-       ▼
-[Supply Chain Impact Agent]
-   ├─ Queries SAP S/4HANA Adapter (BOM, Buffer Stocks, Alternate Vendors)
-   ├─ Projects Stockout Timelines & Financial Exposure
-   └─ Appends: SupplyChainImpactAnalysis (Shortfall Quantities, Rerouting Candidates)
-       │
-       ▼
-[Inclusive Workforce Agent]
-   ├─ Queries SAP SuccessFactors Adapter (Worker Skills, Accommodations, Shift Logs)
-   ├─ Evaluates surge workload feasibility & worker ergonomics
-   ├─ Enforces inclusion rules (Max overtime, physical accessibility, neurodiverse matching)
-   └─ Appends: WorkforceAllocationPlan (Balanced Shift Schedules, Accommodation Badges)
-       │
-       ▼
-[Mitigation Synthesis & Optimization Agent]
-   ├─ Calculates Multi-Objective Trade-offs:
-   │    Utility = w1*(Cost Min) + w2*(SLA Speed) + w3*(Worker Well-Being) + w4*(Carbon)
-   ├─ Synthesizes Option A (Fastest), Option B (Balanced Resilient), Option C (Cost Minimal)
-   └─ Appends: CandidateMitigationOptions + Recommended Action
-       │
-       ▼
-[Human Decision Maker (HITL)]
-   ├─ Reviews Evidence, Assumptions, Cost Diffs & Worker Impact Scores
-   └─ Selects / Modifies Plan -> Submits "Execute"
-       │
-       ▼
-[SAP Dispatcher Adapter]
-   └─ Commits PO updates, shift changes, and rerouting to SAP S/4HANA & SuccessFactors
-```
+### 2. Append-Only Blackboard Invariant
+- Every agent appends an `AgentExecution` record containing:
+  - `agentName`: Identifier of the executing agent.
+  - `timestamp`: UTC ISO timestamp.
+  - `structuredOutput`: Typed domain payload.
+  - `confidence`: Confidence score (0.0 to 1.0).
+  - `evidence`: List of `EvidenceItem` records substantiating the analysis.
+  - `assumptions`: Explicit assumptions made during computation.
+  - `humanReadableSummary`: Concise business explanation.
+- No agent is permitted to overwrite or delete data produced by prior agents.
+
+### 3. Runtime Schema Validation
+Before any agent output is committed to the Case state, it is validated by domain integrity guards in `src/services/validation.ts`. If an agent produces a corrupted or out-of-spec payload, execution halts with a `ValidationError` without corrupting prior state.
 
 ---
 
-## 📦 Strongly Typed Agent Contracts
+## 🔌 Provider Abstraction Architecture
 
-Every agent payload is modeled using **Pydantic v2** on the backend and mapped 1:1 to **TypeScript interfaces** on the frontend.
+The provider layer isolates agent reasoning from data retrieval.
 
-### 1. Disruption Assessment Schema
-```python
-class DisruptionAssessment(BaseModel):
-    disruption_id: str
-    timestamp: datetime
-    category: Literal["GEOPOLITICAL", "WEATHER", "LOGISTICS_BOTTLENECK", "SUPPLIER_INSOLVENCY", "QUALITY_DEFECT"]
-    severity: Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"]
-    affected_locations: list[GeoLocation]
-    affected_materials: list[str]
-    estimated_duration_days: int
-    evidence_signals: list[EvidenceItem]
-    confidence_score: float = Field(ge=0.0, le=1.0)
+### Typed Provider Interfaces (`src/providers/interfaces.ts`):
+
+```typescript
+// 1. Disruption telemetry interface
+export interface IDisruptionDataProvider {
+  getActiveDisruptionSignal(corridorId: string): Promise<RawDisruptionSignal>;
+}
+
+// 2. Supply chain procurement & inventory interface
+export interface ISupplyChainDataProvider {
+  getAffectedPurchaseOrders(corridorId: string): Promise<ImpactedPurchaseOrder[]>;
+  getAffectedMaterials(destinationPlantIds: string[]): Promise<ImpactedMaterial[]>;
+  getInventoryStatus(plantIds: string[]): Promise<RawInventoryStatus[]>;
+}
+
+// 3. Workforce roster & accommodation interface
+export interface IWorkforceDataProvider {
+  getAvailableWorkers(plantIds: string[]): Promise<WorkerConstraintProfile[]>;
+  getWorkerOvertimeSummary(workerIds: string[]): Promise<Record<string, number>>;
+}
+
+// 4. Alternative transport capacity interface
+export interface ITransportCapacityProvider {
+  getAvailableTransportOptions(
+    originPlantId: string,
+    destinationPlantIds: string[]
+  ): Promise<RawTransportCapacity[]>;
+}
 ```
 
-### 2. Supply Chain Impact Schema
-```python
-class SupplyChainImpactAnalysis(BaseModel):
-    analysis_id: str
-    disruption_id: str
-    impacted_purchase_orders: list[str]
-    impacted_plants: list[str]
-    projected_stockout_date: datetime
-    revenue_at_risk_usd: float
-    alternate_supplier_options: list[SupplierOption]
-    inventory_buffer_status: dict[str, float]
-    findings_summary: str
-    assumptions: list[str]
-```
+### Future SAP Integration Boundary
 
-### 3. Inclusive Workforce Allocation Schema
-```python
-class InclusiveWorkforcePlan(BaseModel):
-    plan_id: str
-    disruption_id: str
-    required_surge_roles: list[SurgeRoleDemand]
-    shift_assignments: list[ShiftAssignment]
-    ergonomic_compliance_rate: float = Field(ge=0.0, le=1.0)
-    overtime_equity_score: float = Field(ge=0.0, le=1.0)
-    accommodations_matched: list[AccommodationDetail]
-    neurodiverse_accommodations_count: int
-    worker_burnout_risk_index: Literal["LOW", "MODERATE", "ELEVATED"]
-    findings_summary: str
-```
-
-### 4. Comprehensive Mitigation Plan Schema
-```python
-class MitigationOption(BaseModel):
-    option_id: str
-    name: str
-    description: str
-    trade_off_profile: TradeOffProfile  # Cost, Lead Time, Worker Well-Being, ESG
-    supply_chain_actions: list[SupplyChainAction]
-    workforce_actions: list[WorkforceAction]
-    estimated_recovery_days: int
-    total_cost_usd: float
-    worker_wellbeing_index: float       # 0.0 - 100.0
-    carbon_impact_co2e_tons: float
-    confidence_score: float
-    structured_explanation: str
-```
+The provider interfaces above represent the exact **integration seam** for official SAP services. When official SAP credentials and environment access become available:
+- Real SAP adapters will implement these exact interfaces.
+- The `ProviderRegistry` (`src/providers/registry.ts`) will instantiate the SAP providers when configured.
+- Zero agent, orchestrator, scoring, or UI code will need to change.
 
 ---
 
-## 🔌 SAP Adapter Architecture
+## 🛡️ Transparent Decision & Governance Principles
 
-To maintain absolute credibility and avoid fabricating non-existent SAP APIs while keeping the prototype 100% functional, the system implements an **Enterprise Adapter Design Pattern**.
-
-### Adapter Interface Definition
-```python
-class SAPSupplyChainAdapter(ABC):
-    @abstractmethod
-    async def get_material_inventory(self, material_id: str) -> MaterialInventory:
-        """Fetch real-time stock across plants from S/4HANA."""
-        pass
-
-    @abstractmethod
-    async def get_purchase_orders_by_supplier(self, supplier_id: str) -> list[PurchaseOrder]:
-        """Fetch active purchase orders from S/4HANA."""
-        pass
-
-    @abstractmethod
-    async def get_alternative_suppliers(self, material_id: str) -> list[Supplier]:
-        """Fetch qualified alternative vendors from SAP Ariba catalog."""
-        pass
-
-    @abstractmethod
-    async def update_purchase_order_route(self, po_id: str, new_route: RouteUpdate) -> bool:
-        """Commit rerouting or expedited dispatch in S/4HANA."""
-        pass
-
-
-class SAPSuccessFactorsAdapter(ABC):
-    @abstractmethod
-    async def get_plant_workforce(self, plant_id: str) -> list[WorkerProfile]:
-        """Fetch workforce roster with skill matrices & accommodation profiles."""
-        pass
-
-    @abstractmethod
-    async def submit_shift_roster_update(self, plant_id: str, shift_updates: list[ShiftAssignment]) -> bool:
-        """Commit emergency shift adjustments into SAP SuccessFactors."""
-        pass
-```
-
-### Execution Modes:
-- **Mock Mode (Default for Hackathon Prototype)**: Operates against high-fidelity deterministic fixtures representing real S/4HANA and SuccessFactors enterprise datasets. Zero external credentials needed.
-- **SAP BTP Destination Mode (Ready for Production)**: Binds to SAP BTP Destination Service using standard OData v4 REST clients.
-
----
-
-## 🛡️ Enterprise Privacy, Audit & Reasoning Guardrails
-
-1. **Strict No-Private-CoT Leakage**:
-   - Internal reasoning tokens or raw unstructured chain-of-thought traces are never streamed to client interfaces.
-   - Outputs are strictly formatted as explicit `findings`, `evidence`, `assumptions`, and `trade_offs`.
-2. **Immutable Audit Ledger**:
-   - Every recovery run produces an append-only JSON event log with timestamps, agent IDs, input snapshots, and output hashes.
-3. **Worker Privacy & PII Protection**:
-   - Worker medical or private disability details are abstracted behind standardized `AccommodationCategory` tokens (e.g., `MOBILITY_ELEVATION`, `ACOUSTIC_SENSITIVITY`, `MAX_LIFTING_15KG`) without exposing private medical notes.
-
----
-
-## 🔌 Phase 4A — SAP-Compatible Provider Integration Layer
-
-> **Status**: IMPLEMENTED — Mock providers active. SAP live providers pending official credentials.
-
-### Design Goal
-Enable a clean, zero-friction swap from mock data to real SAP system data — without modifying any agent logic, orchestrator, validation, or UI code. Only the **Provider Registry** changes.
-
-### Integration Architecture
-
-```
-React UI (App.tsx)
-        │
-        ▼
-PipelineOrchestrator (src/services/orchestrator.ts)
-        │
-        │ injects via ProviderRegistry
-        │
-        ├──→ DisruptionAgent ──────────→ IDisruptionDataProvider
-        │                                    │
-        │                              MockDisruptionProvider  ◄── TODAY
-        │                              SapEventMeshProvider   ◄── FUTURE (SAP Event Mesh)
-        │
-        ├──→ SupplyChainImpactAgent ──→ ISupplyChainDataProvider
-        │                                    │
-        │                              MockSupplyChainProvider ◄── TODAY
-        │                              SapS4HanaProvider       ◄── FUTURE (S/4HANA OData v4)
-        │
-        ├──→ WorkforceAgent ──────────→ IWorkforceDataProvider
-        │                                    │
-        │                              MockWorkforceProvider   ◄── TODAY
-        │                              SapSuccessFactorsProvider◄── FUTURE (SuccessFactors OData)
-        │
-        └──→ RecoveryAdaptationAgent ─→ ITransportCapacityProvider
-                                             │
-                                       MockTransportProvider   ◄── TODAY
-                                       SapLbnTmProvider        ◄── FUTURE (SAP LBN / TM API)
-```
-
-### File Locations
-
-| File | Purpose |
-|------|---------|
-| [`src/config/appConfig.ts`](src/config/appConfig.ts) | Single source of truth for `APP_MODE`. Controls which providers are loaded. |
-| [`src/providers/interfaces.ts`](src/providers/interfaces.ts) | Clean TypeScript interfaces for all 4 provider contracts. **This is the SAP integration seam.** |
-| [`src/providers/registry.ts`](src/providers/registry.ts) | Resolves and instantiates providers by mode. **This is the only file that changes to add SAP live mode.** |
-| [`src/providers/mock/`](src/providers/mock/) | Four mock provider implementations for the NE India scenario. Clearly labelled `[MOCK]`. |
-
-### How to Add a Real SAP Provider (Future)
-
-When official SAP credentials and API documentation become available:
-
-1. **Create the SAP provider file**:
-   ```
-   src/providers/sap/sapS4HanaSupplyChainProvider.ts
-   src/providers/sap/sapSuccessFactorsWorkforceProvider.ts
-   src/providers/sap/sapEventMeshDisruptionProvider.ts
-   src/providers/sap/sapLbnTransportProvider.ts
-   ```
-   Each implements its corresponding interface from `src/providers/interfaces.ts`.
-
-2. **Add `sap-live` to `AppMode`** in `src/config/appConfig.ts`.
-
-3. **Add credentials validation** — throw a `ConfigurationError` if any required variable is missing. Never silently fall back to mock mode.
-
-4. **Register the live providers** in `src/providers/registry.ts`:
-   ```typescript
-   case 'sap-live':
-     validateSapCredentials();
-     return {
-       disruption: new SapEventMeshDisruptionProvider(config),
-       supplyChain: new SapS4HanaSupplyChainProvider(config),
-       workforce: new SapSuccessFactorsWorkforceProvider(config),
-       transport: new SapLbnTransportProvider(config),
-     };
-   ```
-
-5. **Set `APP_MODE=sap-live`** in your environment (Vite: `VITE_APP_MODE=sap-live`).
-
-**Zero agent, orchestrator, validation, or UI changes required.**
-
-### Current Mode (Phase 4A)
-
-```
-APP_MODE = mock
-SAP INTEGRATION = NOT CONFIGURED
-```
-
-The UI displays this status in the `IntegrationModeBanner` (amber bar at the top of every page), making it impossible to confuse mock data with live SAP data.
-
-### Planned Future Integrations (Phase 4B+)
-
-| Provider Interface | Future SAP Service | Protocol |
-|---|---|---|
-| `IDisruptionDataProvider` | SAP Integration Suite / Event Mesh | AMQP / Webhook |
-| `ISupplyChainDataProvider` | SAP S/4HANA Cloud — Procurement & Inventory APIs | OData v4 REST |
-| `IWorkforceDataProvider` | SAP SuccessFactors Employee Central + Time Management | OData v4 REST |
-| `ITransportCapacityProvider` | SAP Logistics Business Network (LBN) or SAP TM | OData v4 / REST |
-
-Authentication for all SAP BTP services: **OAuth 2.0 Client Credentials Grant** via SAP BTP Destination Service.
-
+1. **Zero Private Chain-of-Thought**:
+   - Internal reasoning traces are never exposed in user-facing views.
+   - All agent cards display structured findings, concrete evidence, explicit assumptions, and trade-off metrics.
+2. **Transparent 7-Criterion Scoring Engine (`src/services/agents/scoringEngine.ts`)**:
+   - Evaluates scenarios deterministically across 7 normalized criteria: Recovery Effectiveness, Recovery Time, Cost, Risk, Critical Shipment Protection, Workforce Feasibility, and Operational Impact (ESG).
+   - Scoring weights are auditable and configurable.
+3. **Human-in-the-Loop (HITL) Gate**:
+   - Autonomous agents propose and score plans; human regional directors review trade-offs and confirm dispatch authorization.

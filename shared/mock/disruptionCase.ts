@@ -924,8 +924,8 @@ export const MOCK_DISRUPTION_CASE: Case = {
         evidence: [
           {
             evidenceId: 'EV-03-S4HANA-INVENTORY',
-            sourceType: 'SAP_S4HANA',
-            sourceReference: 'PO-890214-COLD',
+            sourceType: 'MOCK_SAP_S4HANA',
+            sourceReference: 'MOCK-PO-890214-COLD',
             description: 'SAP S/4HANA Purchase Order for 6,500 vials Insulin & 820 Oncology packs in transit on stranded trailer TRK-AS01-8842.',
             observedAt: '2026-08-29T14:14:00Z',
             payloadSnippet: { poNumber: 'PO-890214-COLD', valueInr: 18500000, coldChainTemp: '2C - 8C' },
@@ -974,7 +974,7 @@ export const MOCK_DISRUPTION_CASE: Case = {
         evidence: [
           {
             evidenceId: 'EV-04-SUCCESSFACTORS-WORKERS',
-            sourceType: 'SAP_SUCCESSFACTORS',
+            sourceType: 'MOCK_SAP_SUCCESSFACTORS',
             sourceReference: 'SF-EMP-3044',
             description: 'Worker profile Pranab Sarma has certified lumbo-sacral ergonomic limit (max lift 12kg) and requires forklift staging.',
             observedAt: '2026-08-29T14:18:00Z',
@@ -982,7 +982,7 @@ export const MOCK_DISRUPTION_CASE: Case = {
           },
           {
             evidenceId: 'EV-05-SUCCESSFACTORS-ND',
-            sourceType: 'SAP_SUCCESSFACTORS',
+            sourceType: 'MOCK_SAP_SUCCESSFACTORS',
             sourceReference: 'SF-EMP-4019',
             description: 'Worker Debashis Sen: Neurodivergent inspection specialist requiring quiet zone and structured checklist.',
             observedAt: '2026-08-29T14:18:30Z',
@@ -1104,7 +1104,7 @@ export const MOCK_DISRUPTION_CASE: Case = {
         evidence: [
           {
             evidenceId: 'EV-07-PARETO-OPTIMAL',
-            sourceType: 'SAP_S4HANA',
+            sourceType: 'DECISION_SCORING_ENGINE',
             sourceReference: 'MULTI-CRITERIA-ANALYZER',
             description: 'Multi-criteria utility optimization ranks Scenario B at 95.8 composite score (Pareto-optimal on Cost vs SLA vs Worker Well-Being).',
             observedAt: '2026-08-29T14:27:00Z',

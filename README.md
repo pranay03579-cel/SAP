@@ -1,110 +1,203 @@
 # SAP Sentinel — AI-Powered Supply-Chain Disruption Recovery & Inclusive Workforce Control Tower
 
 **SAP HackFest 2026 (North Region — Chandigarh University)**  
-*Dual-Track Innovation: Resilient Supply Chains × Inclusive Workforce*
+*Dual-Track Innovation: Resilient Supply Chains (Track 1) × Inclusive Workforce (Track 2)*
 
 ---
 
-## 📌 Executive Summary
+## 📌 Current Status
 
-Modern enterprise supply chains are vulnerable to black swan disruptions—geopolitical conflict, extreme weather, logistics chokepoints, and sudden supplier insolvency. When supply chains fracture, the frontline workforce is disproportionately impacted through unsafe overtime, emergency reallocations, and lack of adaptive accommodations.
-
-**SAP Sentinel** is an AI-powered enterprise control tower and autonomous recovery engine that bridges **Supply Chain Operations (SAP S/4HANA / SAP Ariba)** with **Human Capital Management & Inclusive Workforce Orchestration (SAP SuccessFactors)**.
-
-When a disruption strikes:
-1. **Detects & Quantifies Disruption**: Identifies supply disruptions, material shortages, and delivery bottlenecks in real time.
-2. **Simulates Recovery Paths**: Generates multi-criteria mitigation strategies (alternative sourcing, inventory rebalancing, dynamic rerouting).
-3. **Orchestrates Inclusive Workforce Redeployment**: Harmonizes factory, warehouse, and logistics labor reallocation with worker well-being, accessibility accommodations, fatigue management, neurodiversity considerations, and fair overtime distribution.
-4. **Enforces Human-in-the-Loop (HITL) Governance**: Provides enterprise decision-makers with verifiable evidence, cost-service-labor trade-offs, and one-click execution into SAP systems.
+> **CURRENT STATUS: WORKING PROTOTYPE WITH DETERMINISTIC MOCK PROVIDERS**  
+> The application currently runs locally in **Mock Mode** using deterministic mock data providers. It is built with an enterprise provider/adapter architecture (`src/providers/`) so that official SAP integrations (SAP S/4HANA, SAP SuccessFactors, SAP Logistics Business Network, and SAP Event Mesh) can be plugged in when official credentials and endpoints are configured, without modifying the agent reasoning engine or frontend.
+>
+> All demonstration metrics, transport slots, and personnel records represent a simulated logistics disruption scenario in North Eastern India (NH-27 Guwahati–Silchar corridor).
 
 ---
 
-## 🎯 Key Innovation: The Dual-Track Intersection
+## 🏛️ Implemented Now vs. Future SAP Integration
+
+| Dimension | Implemented Now (Working in Repository) | Future SAP Integration (Seams Defined) |
+| :--- | :--- | :--- |
+| **Runtime & UI** | React 19, TypeScript, Vite, TailwindCSS Control Tower UI | SAP BTP Portal / Fiori Launchpad embedding |
+| **Agent Pipeline** | 5-Agent Sequential Execution via `PipelineOrchestrator` | SAP AI Core / Generative AI Hub integration |
+| **State Ledger** | Append-Only In-Memory Blackboard with JSON Audit Trail | SAP HANA Cloud persistence / Audit Log Service |
+| **Disruption Ingestion** | `IDisruptionDataProvider` via `MockDisruptionProvider` | SAP Event Mesh / IoT Telemetry Services |
+| **Supply Chain Data** | `ISupplyChainDataProvider` via `MockSupplyChainProvider` | SAP S/4HANA Cloud OData APIs (Procurement & Inventory) |
+| **Workforce Roster** | `IWorkforceDataProvider` via `MockWorkforceProvider` | SAP SuccessFactors Employee Central & Time Management |
+| **Transport Capacity**| `ITransportCapacityProvider` via `MockTransportProvider` | SAP Logistics Business Network (LBN) / SAP TM APIs |
+| **Decision & Scoring**| Deterministic 7-Criterion Weighted Utility Optimization | Configurable Enterprise Policy Rules Engine |
+| **Human Governance** | HITL Approval Modal with simulated SAP dispatch actions | Live OData POST transactions to S/4HANA & SuccessFactors |
+
+---
+
+## 🤖 The Five-Agent Pipeline
+
+The recovery engine executes five specialized autonomous agents sequentially across an immutable append-only state ledger:
 
 ```
-┌────────────────────────────────────────────────────────┐
-│               SAP SENTINEL CONTROL TOWER               │
-└───────────────────────────┬────────────────────────────┘
-                            │
-            ┌───────────────┴───────────────┐
-            ▼                               ▼
-┌───────────────────────┐       ┌───────────────────────┐
-│ Track 1: Supply Chain │       │  Track 2: Workforce   │
-│       Resiliency      │       │      Inclusion        │
-├───────────────────────┤       ├───────────────────────┤
-│ • Disruption Sensing  │       │ • Inclusive Matching  │
-│ • Inventory Balancing │  ◄──► │ • Fatigue & Ergonomics│
-│ • Alternative Sourcing│       │ • Accommodations/ND   │
-│ • SLA & Cost Analysis │       │ • Fair Shift Balancing│
-└───────────────────────┘       └───────────────────────┘
-            │                               │
-            └───────────────┬───────────────┘
-                            ▼
-      ┌───────────────────────────────────────────┐
-      │ Autonomous Recovery Engine + HITL Console │
-      └───────────────────────────────────────────┘
+Disruption Ingested
+       │
+       ▼
+1. [Disruption Agent] ───────────── Ingests road telemetry, meteorological alert, corridor blockage (NH-27 KM-142)
+       │
+       ▼
+2. [Supply Chain Impact Agent] ──── Analyzes stranded POs (₹4.85 Cr), hospital stockout window (28h), cold-chain battery (18h)
+       │
+       ▼
+3. [Workforce Agent] ────────────── Evaluates qualified staff (42/50), ergonomic lifting limits, ND quiet zones, JIT training
+       │
+       ▼
+4. [Recovery Adaptation Agent] ──── Generates 3 multimodal scenarios: Air Charter, Multimodal Split, Feeder Road Detour
+       │
+       ▼
+5. [Decision Agent] ─────────────── Multi-criteria weighted scoring engine (7 criteria); recommends Scenario B (Score 95.8/100)
+       │
+       ▼
+6. [Human-in-the-Loop Governance] ── Regional Director reviews trade-offs, verifies accommodations, and authorizes dispatch
 ```
 
-- **Resilient Supply Chains**: Automated Root Cause Analysis (RCA), real-time bill-of-materials (BOM) risk explosion, inventory buffer utilization, supplier switch impact modeling, and SLA breach penalty minimization.
-- **Inclusive Workforce**: Ensuring recovery operations respect worker capabilities, physical constraints, neurodivergent work preferences, language barriers, adaptive equipment requirements, and equitable overtime distribution during emergency shifts.
+Each agent:
+- Receives strictly required context from prior steps.
+- Validates output schemas via runtime domain guards (`src/services/validation.ts`).
+- Appends an immutable `AgentExecution` record to the Case audit ledger.
+- Updates only its own domain section of the Case without overwriting others.
+- Produces zero private chain-of-thought, outputting structured findings, evidence, assumptions, and trade-offs.
 
 ---
 
-## 🚀 Core Capabilities
+## 🔌 Provider Abstraction Layer
 
-| Capability | Description |
-| :--- | :--- |
-| **Multi-Agent Disruption Engine** | Specialized AI agents collaborate via an append-only blackboard state machine to sense, analyze, and propose recovery actions. |
-| **Enterprise SAP Adapters** | Clean architectural interfaces for **SAP S/4HANA** (Inventory, Sales Orders, Purchase Orders), **SAP SuccessFactors** (Employee Profiles, Skills, Ergonomic Accommodations), and **SAP Event Mesh** (IoT/Disruption feeds). |
-| **Inclusive Workforce Matching** | Algorithmic scoring that pairs surge operational tasks with worker skills, accessibility needs, preferred shift modalities, and workload caps. |
-| **Scenario Simulator & Diff Viewer** | Side-by-side comparison of baseline vs. mitigation scenarios (Cost, Lead Time, Carbon Footprint, Worker Well-Being Index). |
-| **Verifiable Decision Ledger** | Immutable audit trail of every agent hypothesis, evidence item, assumption, and human decision. |
-| **Zero-Exposer Reasoning** | Strictly separates structured findings, metrics, and explanations from internal agent reasoning chains for security and clarity. |
+The application cleanly separates agent business logic from external data access through typed interfaces in `src/providers/interfaces.ts`:
 
----
+```
+React Control Tower UI
+         │
+         ▼
+PipelineOrchestrator (src/services/orchestrator.ts)
+         │
+         ├──→ DisruptionAgent ──────────→ IDisruptionDataProvider
+         │                                    └── MockDisruptionProvider (Active)
+         │
+         ├──→ SupplyChainImpactAgent ──→ ISupplyChainDataProvider
+         │                                    └── MockSupplyChainProvider (Active)
+         │
+         ├──→ WorkforceAgent ──────────→ IWorkforceDataProvider
+         │                                    └── MockWorkforceProvider (Active)
+         │
+         └──→ RecoveryAdaptationAgent ─→ ITransportCapacityProvider
+                                              └── MockTransportProvider (Active)
+```
 
-## 🛠️ Technology Stack
-
-- **Backend / Agent Engine**: Python 3.11+, FastAPI, Pydantic v2 (Strict Schema Enforcement), AsyncIO.
-- **Agent Architecture**: Multi-Agent State Machine (Deterministic Orchestration + Structured LLM reasoning).
-- **Frontend / Control Tower**: React 18 / Vite / TypeScript, TailwindCSS / Modern Enterprise Design System, Lucide Icons, Recharts for analytics.
-- **Integration Layer**: SAP Adapter Abstraction Suite (Pluggable Mock Adapters + OData v4 / REST connector readiness).
-- **Audit & Persistence**: In-Memory + SQLite/PostgreSQL structured event store.
+Swapping from mock providers to live SAP providers requires implementing the provider interfaces in `src/providers/` and updating the `ProviderRegistry` (`src/providers/registry.ts`). No agent or UI code changes are needed.
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-├── ARCHITECTURE.md          # Complete system architecture and agent design
-├── PROJECT_PLAN.md          # Phased implementation plan and milestones
-├── AGENTS.md                # Developer & AI coding guidelines and rules
-├── README.md                # Project overview and orientation (this file)
-├── backend/                 # FastAPI agent engine and SAP adapters (Phase 1)
-│   ├── app/
-│   │   ├── adapters/        # SAP S/4HANA, SuccessFactors & Event adapters
-│   │   ├── agents/          # Disruption, SupplyChain, Workforce & Mitigation agents
-│   │   ├── core/            # Config, security, and state orchestrator
-│   │   ├── models/          # Strongly typed Pydantic models & schemas
-│   │   └── api/             # REST endpoints for control tower
-│   └── tests/               # Backend unit and agent verification tests
-├── frontend/                # Enterprise Control Tower UI (Phase 3)
-│   ├── src/
-│   │   ├── components/      # Control tower widgets, maps, rosters, diff viewers
-│   │   ├── hooks/           # State & API hooks
-│   │   ├── types/           # TypeScript schema definitions matching backend
-│   │   └── views/           # Dashboard, Simulation, Workforce, Audit screens
-└── data/                    # Benchmark disruption scenarios & SAP mock fixtures
+SAP/
+├── src/
+│   ├── components/            # Control Tower UI components (Executive Dashboard, Timeline, etc.)
+│   │   ├── ExecutiveDashboard.tsx   # 30-Second briefing, KPI summary, and risk cards
+│   │   ├── AgentTimeline.tsx        # 5-Agent interactive timeline & Decision Trace flowchart
+│   │   ├── AgentDetailPanel.tsx     # Structured agent findings, evidence & assumptions inspector
+│   │   ├── RecoveryComparison.tsx   # Scenario comparison & 7-criterion score breakdown
+│   │   ├── FinalDecisionPanel.tsx   # AI decision recommendation & action steps
+│   │   ├── WorkforceRosterView.tsx  # Inclusive workforce impact, JIT training & accommodations
+│   │   ├── HumanApprovalModal.tsx   # Human-in-the-loop executive review modal
+│   │   ├── AuditLedgerView.tsx      # Append-only immutable state history ledger
+│   │   ├── IntegrationModeBanner.tsx # Prominent MOCK MODE environment banner
+│   │   ├── DisruptionDetails.tsx    # Geospatial route & telemetry details
+│   │   └── Header.tsx               # Control tower navigation & status
+│   ├── config/
+│   │   └── appConfig.ts       # Application mode resolution (Single Source of Truth)
+│   ├── providers/
+│   │   ├── interfaces.ts      # Typed provider interfaces (SAP Integration Seams)
+│   │   ├── registry.ts        # Provider dependency injection registry
+│   │   └── mock/              # Deterministic mock data providers (NH-27 scenario)
+│   ├── services/
+│   │   ├── agents/            # 5 specialized agent implementations & scoring engine
+│   │   ├── orchestrator.ts    # Sequential multi-agent pipeline orchestrator
+│   │   └── validation.ts      # Runtime schema guards & domain invariant validators
+│   └── tests/                 # Automated test suite (23 unit & integration tests)
+├── shared/
+│   ├── types/domain.ts        # Core domain models, enums & TypeScript contracts
+│   └── mock/disruptionCase.ts # High-fidelity benchmark disruption dataset
+├── package.json               # Scripts & dependencies
+├── tsconfig.json              # TypeScript compiler configuration (Strict Mode)
+├── vite.config.ts             # Vite build configuration
+├── ARCHITECTURE.md            # System architecture & adapter contracts
+├── PROJECT_PLAN.md            # Phased implementation roadmap & verification gates
+└── AGENTS.md                  # Development guidelines & multi-agent invariants
 ```
 
 ---
 
-## 🧭 Getting Started & Execution Roadmap
+## 🚀 Getting Started
 
-Follow the staged implementation in [PROJECT_PLAN.md](file:///c:/Users/prana/OneDrive/Desktop/SAP/PROJECT_PLAN.md):
-- **Phase 0**: Architectural Specs & Schemas (*Current*)
-- **Phase 1**: Backend Foundation, Data Models & SAP Adapter Suite
-- **Phase 2**: Multi-Agent Disruption & Inclusive Recovery Engine
-- **Phase 3**: Enterprise Control Tower Frontend
-- **Phase 4**: Real-world Scenarios & Interactive Simulation
-- **Phase 5**: Verification & Demo Packaging
+### Prerequisites
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher
+
+### Installation
+```bash
+# Clone the repository
+git clone <repo-url>
+cd SAP
+
+# Install dependencies
+npm install
+```
+
+### Running Locally
+```bash
+# Start Vite development server
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Building for Production
+```bash
+# Type check and build production bundle
+npm run build
+```
+
+---
+
+## 🧪 Automated Test Suite
+
+The project includes comprehensive automated tests covering the entire multi-agent pipeline, deterministic scoring engine, transparent audit trail, and inclusive workforce planning:
+
+```bash
+# Run all automated tests
+npm test
+```
+
+### Test Suites Included:
+1. **Decision Agent & Scoring Engine (`src/tests/decision.test.ts`)** — 9 tests:
+   - Dynamic winner selection based on composite score (not hardcoded).
+   - Weight variation effects (Cost-driven, Speed-driven, Workforce-driven, Critical shipment priority).
+   - Deterministic reproducibility and mathematical invariant verification.
+2. **Multi-Agent Pipeline & Orchestration (`src/tests/pipeline.test.ts`)** — 5 tests:
+   - Sequential 5-agent execution.
+   - Non-destructive failure isolation.
+   - Idempotent pipeline retry from point of failure.
+   - Runtime schema validation and corruption protection.
+3. **Transparent Agent Trail & Decision Trace (`src/tests/transparentTrail.test.ts`)** — 4 tests:
+   - Audit trail completeness (findings, evidence, assumptions, confidence).
+   - Zero private chain-of-thought exposure verification.
+   - End-to-end lineage connectivity.
+4. **Inclusive Operational Workforce (`src/tests/workforce.test.ts`)** — 5 tests:
+   - Demand headcount vs available staff shortage detection.
+   - Skill certification mismatch detection.
+   - Rest period and fatigue threshold enforcement.
+   - Just-in-time micro-training generation.
+   - Accommodation preservation (ergonomic, neurodivergent, multilingual).
+
+---
+
+## 👥 Hackathon Team & Acknowledgements
+
+Developed for **SAP HackFest 2026 (North Region — Chandigarh University)**.
+- **Track 1**: Resilient Supply Chains
+- **Track 2**: Inclusive Workforce

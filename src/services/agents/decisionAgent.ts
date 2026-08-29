@@ -168,7 +168,7 @@ export class DecisionAgent implements IAgent<DecisionInputContext, Decision> {
       evidence: [
         {
           evidenceId: `EV-SCORE-${Date.now()}`,
-          sourceType: 'SAP_S4HANA' as const,
+          sourceType: 'DECISION_SCORING_ENGINE' as const,
           sourceReference: 'MULTI-CRITERIA-SCORING-ENGINE-v2',
           description: `7-criterion weighted scoring engine evaluated ${candidateScenarios.length} scenarios. Winner: ${winner.scenarioId} with composite score ${winner.compositeScore.toFixed(1)}/100.`,
           observedAt: new Date().toISOString(),
@@ -181,7 +181,7 @@ export class DecisionAgent implements IAgent<DecisionInputContext, Decision> {
         },
         ...evaluations.map((ev) => ({
           evidenceId: `EV-EVAL-${ev.scenarioId}-${Date.now()}`,
-          sourceType: 'SAP_S4HANA' as const,
+          sourceType: 'DECISION_SCORING_ENGINE' as const,
           sourceReference: ev.scenarioId,
           description: `Scenario evaluation: ${ev.scenarioName}. Composite: ${ev.compositeScore.toFixed(1)}/100. Rank: ${ev.rank}.`,
           observedAt: new Date().toISOString(),

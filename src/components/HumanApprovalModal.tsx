@@ -67,7 +67,7 @@ export const HumanApprovalModal: React.FC<HumanApprovalModalProps> = ({
             </div>
             <div>
               <h3 className="text-base font-bold text-white">Human-in-the-Loop (HITL) Governance Review</h3>
-              <p className="text-xs text-sap-muted">Executive Authorization & SAP System Dispatch Protocol</p>
+              <p className="text-xs text-sap-muted">Executive Authorization & Simulated Dispatch Protocol</p>
             </div>
           </div>
           <button
@@ -86,11 +86,11 @@ export const HumanApprovalModal: React.FC<HumanApprovalModalProps> = ({
                 <CheckCircle2 className="w-8 h-8" />
               </div>
               <h4 className="text-lg font-bold text-white">
-                {submitSuccess === 'APPROVED' ? 'Recovery Plan Approved & Dispatched!' : 'Recovery Plan Rejected & Flagged for Re-planning'}
+                {submitSuccess === 'APPROVED' ? 'Recovery Plan Approved (Simulated Dispatch)!' : 'Recovery Plan Rejected & Flagged for Re-planning'}
               </h4>
               <p className="text-xs text-slate-300 max-w-md mx-auto">
                 {submitSuccess === 'APPROVED'
-                  ? 'Purchase orders updated in SAP S/4HANA and inclusive shift roster locked in SAP SuccessFactors.'
+                  ? 'Simulated dispatch prepared: PO routing mapped for SAP S/4HANA and inclusive shift roster prepared for SAP SuccessFactors.'
                   : 'Case status updated. Agents notified to re-evaluate alternative road & rail scenarios.'}
               </p>
             </div>
@@ -154,7 +154,7 @@ export const HumanApprovalModal: React.FC<HumanApprovalModalProps> = ({
                 {/* Downstream SAP Dispatch Actions List */}
                 <div className="pt-2 border-t border-sap-border/60 space-y-1.5">
                   <span className="text-[10px] font-bold text-sap-muted uppercase tracking-wider block">
-                    Automated SAP Post-Approval Execution (What Happens Next):
+                    Simulated SAP Dispatch Execution (Target Integration Points):
                   </span>
                   <div className="space-y-1 text-[11px]">
                     <div className="flex items-center justify-between bg-sap-dark/90 p-2 rounded-lg border border-sap-border/40">

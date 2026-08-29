@@ -80,7 +80,7 @@ export class SupplyChainImpactAgent implements IAgent<SupplyChainInputContext, S
       ],
       evidence: pos.map((po) => ({
         evidenceId: `EV-PO-${po.poNumber}-${Date.now()}`,
-        sourceType: 'SAP_S4HANA' as const,
+        sourceType: 'MOCK_SAP_S4HANA' as const,
         sourceReference: po.poNumber,
         description: `Purchase Order ${po.poNumber} from ${po.vendorName} — projected delay: +${po.projectedDelayHours}h.`,
         observedAt: new Date().toISOString(),

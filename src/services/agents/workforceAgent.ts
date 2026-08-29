@@ -379,7 +379,7 @@ export class WorkforceAgent implements IAgent<WorkforceInputContext, WorkforceIm
       ],
       evidence: workers.map((w: WorkerConstraintProfile) => ({
         evidenceId: 'EV-WF-' + w.workerId + '-' + Date.now(),
-        sourceType: 'SAP_SUCCESSFACTORS' as const,
+        sourceType: 'MOCK_SAP_SUCCESSFACTORS' as const,
         sourceReference: w.workerId,
         description: `Worker profile: ${w.name} — Role: ${w.role}. Skills: ${w.skillCertifications.join(', ')}. Fatigue risk: ${(w.fatigueRiskScore * 100).toFixed(0)}%. Accommodations: ${w.accommodations.map((a: { category: string }) => a.category).join(', ') || 'none'}.`,
         observedAt: new Date().toISOString(),

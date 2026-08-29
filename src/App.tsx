@@ -288,12 +288,12 @@ export default function App() {
             <div className="flex items-center space-x-2">
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span className="font-bold uppercase tracking-wider">
-                Recovery Plan Approved & Dispatched
+                Recovery Plan Approved (Simulated Dispatch)
               </span>
-              <span>— SAP S/4HANA PO routes updated; SAP SuccessFactors workforce roster locked.</span>
+              <span>— Prepared simulated actions: SAP S/4HANA PO route updates & SAP SuccessFactors workforce roster lock.</span>
             </div>
             <span className="font-mono text-emerald-400 font-semibold">
-              Status: SAP_DISPATCH_CONFIRMED
+              Status: SIMULATED_DISPATCH_CONFIRMED
             </span>
           </div>
         )}

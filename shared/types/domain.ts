@@ -72,8 +72,17 @@ export interface GeoLocation {
 
 export interface EvidenceItem {
   evidenceId: string;
-  sourceType: 'SAP_S4HANA' | 'SAP_SUCCESSFACTORS' | 'IOT_SENSOR' | 'ROAD_TELEMETRY' | 'METEOROLOGICAL_FEED';
-  sourceReference: string; // e.g. "PO-890214", "SF-EMP-4019", "SENSOR-NH27-KM48"
+  sourceType:
+    | 'MOCK_SAP_S4HANA'
+    | 'MOCK_SAP_SUCCESSFACTORS'
+    | 'DECISION_SCORING_ENGINE'
+    | 'SIMULATED_TELEMETRY'
+    | 'ROAD_TELEMETRY'
+    | 'METEOROLOGICAL_FEED'
+    | 'SAP_S4HANA'
+    | 'SAP_SUCCESSFACTORS'
+    | 'IOT_SENSOR';
+  sourceReference: string; // e.g. "MOCK-PO-890214", "MOCK-SF-EMP-4019", "SENSOR-NH27-KM48"
   description: string;
   observedAt: string; // ISO 8601 string
   payloadSnippet: Record<string, unknown>;
