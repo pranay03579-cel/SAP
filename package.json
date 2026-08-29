@@ -1,0 +1,45 @@
+{
+  "name": "sap-sentinel",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "SAP Sentinel — AI-Powered Supply-Chain Disruption Recovery & Inclusive Workforce Control Tower",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "test": "tsx --test src/tests/**/*.test.ts",
+    "test:types": "tsc --noEmit"
+  },
+  "keywords": [
+    "sap",
+    "supply-chain",
+    "hackfest-2026",
+    "resilience",
+    "inclusive-workforce"
+  ],
+  "author": "SAP HackFest 2026 Team",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.4.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.2"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.37.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwind-merge": "^3.6.0"
+  }
+}
