@@ -78,10 +78,12 @@ export const SimpleScenarioComparison: React.FC<SimpleScenarioComparisonProps> =
   return (
     <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
       {/* Header */}
-      <div className="px-5 py-4 border-b border-slate-100 flex items-center space-x-2">
-        <BarChart3 className="w-4 h-4 text-blue-600" />
-        <h3 className="text-sm font-bold text-slate-900">All recovery options</h3>
-        <span className="text-xs text-slate-400">— {sorted.length} options compared</span>
+      <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <BarChart3 className="w-4 h-4 text-blue-600" />
+          <h3 className="text-sm font-bold text-slate-900">Other recovery options</h3>
+        </div>
+        <span className="text-xs text-slate-400">See how the other recovery options compare.</span>
       </div>
 
       {/* Scenario list */}

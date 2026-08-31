@@ -209,27 +209,16 @@ export default function App() {
 
         {/* Panel: How AI Decided — Simple Agent Timeline (primary) */}
         {activePanel === 'analysis' && (
-          <div className="max-w-5xl mx-auto space-y-3">
-            <PanelHeader
-              title="How the AI reached this decision"
-              subtitle="Plain-language summary from each of the 5 agents"
-              onClose={() => setActivePanel(null)}
-            />
-            <SimpleAgentTimeline
-              currentCase={currentCase}
-              onOpenFullDetail={() => setActivePanel('analysis')}
-            />
+          <div className="max-w-2xl mx-auto space-y-2">
+            <BackButton onClick={() => setActivePanel(null)} />
+            <SimpleAgentTimeline currentCase={currentCase} />
           </div>
         )}
 
         {/* Panel: See Other Options — Scenario Comparison */}
         {activePanel === 'alternatives' && (
-          <div className="max-w-2xl mx-auto space-y-3">
-            <PanelHeader
-              title="Other recovery options"
-              subtitle="All 3 options scored across 7 criteria"
-              onClose={() => setActivePanel(null)}
-            />
+          <div className="max-w-2xl mx-auto space-y-2">
+            <BackButton onClick={() => setActivePanel(null)} />
             <SimpleScenarioComparison
               currentCase={currentCase}
               onSelectScenarioForApproval={handleSelectScenarioForApproval}
@@ -239,24 +228,16 @@ export default function App() {
 
         {/* Panel: Workforce Details */}
         {activePanel === 'workforce' && (
-          <div className="max-w-2xl mx-auto space-y-3">
-            <PanelHeader
-              title="Workforce details"
-              subtitle="Availability, skill gaps, accommodations, redeployments"
-              onClose={() => setActivePanel(null)}
-            />
+          <div className="max-w-2xl mx-auto space-y-2">
+            <BackButton onClick={() => setActivePanel(null)} />
             <SimpleWorkforceView currentCase={currentCase} />
           </div>
         )}
 
-        {/* Panel: Audit Trail */}
+        {/* Panel: Decision history (Audit Trail) */}
         {activePanel === 'audit' && (
-          <div className="max-w-2xl mx-auto space-y-3">
-            <PanelHeader
-              title="Audit trail"
-              subtitle="Every agent action, assumption, and evidence item"
-              onClose={() => setActivePanel(null)}
-            />
+          <div className="max-w-2xl mx-auto space-y-2">
+            <BackButton onClick={() => setActivePanel(null)} />
             <SimpleAuditView
               currentCase={currentCase}
               onSelectExecution={(exec) => setSelectedExecution(exec)}
@@ -290,22 +271,12 @@ export default function App() {
   );
 }
 
-// ─── Panel Header ───────────────────────────────────────────────────────────────────────────────
-const PanelHeader: React.FC<{
-  title: string;
-  subtitle: string;
-  onClose: () => void;
-}> = ({ title, subtitle, onClose }) => (
-  <div className="flex items-center justify-between py-3 px-4 bg-white border border-slate-200 rounded-t-xl border-b-0">
-    <div>
-      <h3 className="text-sm font-bold text-slate-900">{title}</h3>
-      <p className="text-[11px] text-slate-400 mt-0.5">{subtitle}</p>
-    </div>
-    <button
-      onClick={onClose}
-      className="flex items-center space-x-1.5 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors"
-    >
-      <span>← Back</span>
-    </button>
-  </div>
+// ─── Back Button ──────────────────────────────────────────────────────────────
+const BackButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
+  <button
+    onClick={onClick}
+    className="inline-flex items-center space-x-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors py-1 px-1 mb-1"
+  >
+    <span>← Back to Control Tower</span>
+  </button>
 );

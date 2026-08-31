@@ -1,14 +1,12 @@
 /**
- * SimpleAuditView — Phase 12
+ * SimpleAuditView — Phase 13 Final Polish
  *
- * Minimal, light-mode audit trail panel.
+ * Minimal, light-mode audit trail panel ("Decision history").
  * Same design language as SimpleAgentTimeline.
  *
- * Shows each agent execution as a row with:
- *   - agent name + timestamp
- *   - confidence score
- *   - evidence count
- *   - expandable: assumptions + evidence items
+ * Shows each agent execution with:
+ *   - Collapsed: Agent name + Completed status
+ *   - Expanded: Timestamp, confidence, summary, assumptions, evidence items, payload link
  *
  * No raw chain-of-thought exposed.
  */
@@ -56,17 +54,21 @@ export const SimpleAuditView: React.FC<SimpleAuditViewProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
       {/* Header */}
       <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Shield className="w-4 h-4 text-blue-600" />
-          <h3 className="text-sm font-bold text-slate-900">Audit trail</h3>
-          <span className="text-xs text-slate-400">— {ledger.length} entries</span>
+        <div>
+          <div className="flex items-center space-x-2">
+            <Shield className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-bold text-slate-900">Decision history</h3>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            See the history of decisions made by the agents.
+          </p>
         </div>
         <div className="flex items-center space-x-1.5 text-[10px] text-slate-400 font-mono">
           <Lock className="w-3 h-3" />
-          <span>APPEND-ONLY · TAMPER-EVIDENT</span>
+          <span>TAMPER-EVIDENT LEDGER</span>
         </div>
       </div>
 
@@ -79,49 +81,55 @@ export const SimpleAuditView: React.FC<SimpleAuditViewProps> = ({
             <div key={exec.executionId} className="border-l-4 border-l-slate-200">
               <button
                 onClick={() => setExpanded(isOpen ? null : exec.executionId)}
-                className="w-full px-5 py-4 flex items-start space-x-3 text-left hover:bg-slate-50 transition-colors"
+                className="w-full px-5 py-3.5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
               >
-                {/* Index */}
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-[11px] font-bold flex items-center justify-center mt-0.5">
-                  {idx + 1}
-                </span>
-
-                {/* Main */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center flex-wrap gap-2 mb-1">
-                    <span className="text-xs font-bold text-slate-900">{exec.agentName}</span>
-                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${confidenceColor(exec.confidence)}`}>
-                      {(exec.confidence * 100).toFixed(0)}% confidence
-                    </span>
-                    <span className="flex items-center space-x-1 text-[10px] text-green-600 font-semibold">
-                      <CheckCircle2 className="w-3 h-3" />
-                      <span>{exec.executionStatus}</span>
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-400 font-mono">{formatTs(exec.timestamp)}</p>
-                  <p className="text-xs text-slate-600 mt-1">{exec.humanReadableSummary}</p>
+                {/* Index + Name */}
+                <div className="flex items-center space-x-3">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-[11px] font-bold flex items-center justify-center">
+                    {idx + 1}
+                  </span>
+                  <span className="text-xs font-bold text-slate-900">{exec.agentName}</span>
                 </div>
 
-                {/* Toggle */}
-                <div className="flex-shrink-0 mt-1 text-slate-400">
-                  {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                {/* Status + Toggle */}
+                <div className="flex items-center space-x-3">
+                  <span className="flex items-center space-x-1 text-[11px] font-semibold text-green-600">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Completed</span>
+                  </span>
+                  <div className="text-slate-400">
+                    {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </div>
                 </div>
               </button>
 
               {/* Expanded detail */}
               {isOpen && (
-                <div className="px-14 pb-5 space-y-4">
+                <div className="px-14 pb-5 pt-1 space-y-3.5 border-t border-slate-50 bg-slate-50/40">
 
-                  {/* Execution ID */}
+                  {/* Metadata Row */}
+                  <div className="flex flex-wrap items-center gap-3 text-xs pt-1">
+                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${confidenceColor(exec.confidence)}`}>
+                      {(exec.confidence * 100).toFixed(0)}% confidence
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-mono">
+                      {formatTs(exec.timestamp)}
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      ID: {exec.executionId}
+                    </span>
+                  </div>
+
+                  {/* Summary */}
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Execution ID</span>
-                    <p className="text-[11px] font-mono text-slate-500 break-all">{exec.executionId}</p>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Execution Summary</span>
+                    <p className="text-xs text-slate-700 leading-relaxed">{exec.humanReadableSummary}</p>
                   </div>
 
                   {/* Assumptions */}
                   {exec.assumptions.length > 0 && (
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Assumptions made</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Assumptions made</span>
                       <ul className="space-y-1">
                         {exec.assumptions.map((a, i) => (
                           <li key={i} className="flex items-start space-x-1.5 text-xs text-slate-600">
@@ -136,7 +144,7 @@ export const SimpleAuditView: React.FC<SimpleAuditViewProps> = ({
                   {/* Evidence */}
                   {exec.evidence.length > 0 && (
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                         Evidence ({exec.evidence.length} items)
                       </span>
                       <div className="space-y-1.5">
@@ -150,7 +158,7 @@ export const SimpleAuditView: React.FC<SimpleAuditViewProps> = ({
                         ))}
                         {exec.evidence.length > 4 && (
                           <p className="text-[11px] text-slate-400 pl-6">
-                            +{exec.evidence.length - 4} more items. Click "View full payload" for complete record.
+                            +{exec.evidence.length - 4} more items. Click below to inspect raw payload.
                           </p>
                         )}
                       </div>
@@ -158,12 +166,14 @@ export const SimpleAuditView: React.FC<SimpleAuditViewProps> = ({
                   )}
 
                   {/* Full payload link */}
-                  <button
-                    onClick={() => onSelectExecution(exec)}
-                    className="text-[11px] text-blue-600 hover:text-blue-800 font-medium underline underline-offset-2 transition-colors"
-                  >
-                    View complete structured payload →
-                  </button>
+                  <div className="pt-1">
+                    <button
+                      onClick={() => onSelectExecution(exec)}
+                      className="text-[11px] text-blue-600 hover:text-blue-800 font-medium underline underline-offset-2 transition-colors"
+                    >
+                      View complete structured payload →
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -174,7 +184,7 @@ export const SimpleAuditView: React.FC<SimpleAuditViewProps> = ({
       {/* Footer */}
       <div className="px-5 py-3 bg-slate-50 border-t border-slate-100">
         <p className="text-[11px] text-slate-400 text-center">
-          Case ID: <span className="font-mono">{currentCase.agentHistory.caseId}</span> · {currentCase.agentHistory.totalExecutions} total executions recorded
+          Case ID: <span className="font-mono">{currentCase.agentHistory.caseId}</span> · {currentCase.agentHistory.totalExecutions} total executions recorded in ledger
         </p>
       </div>
     </div>

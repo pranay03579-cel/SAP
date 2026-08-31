@@ -28,6 +28,7 @@ import {
   Zap,
   Loader2,
   ShieldCheck,
+  ChevronRight,
 } from 'lucide-react';
 import { Case } from '../../shared/types/domain';
 
@@ -127,6 +128,11 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
       </div>
     );
   }
+
+  // Reason text formatting (truncated to approx 120 chars)
+  const reasonText = decision?.justification?.primaryReason ?? '';
+  const displayReason =
+    reasonText.length > 120 ? reasonText.slice(0, 117).trimEnd() + '…' : reasonText;
 
   // ── COMPLETE: main demo layout ──────────────────────────────────────────
   return (
@@ -229,12 +235,12 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
                 {decision.recommendedScenarioName}
               </h2>
               <p className="text-sm text-slate-600 mt-2 leading-relaxed">
-                {decision.justification.primaryReason}
+                {displayReason}
               </p>
             </div>
 
-            {/* Key metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {/* Key metrics — exactly 3 outcomes */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               <MetricPill
                 icon={<Clock className="w-3.5 h-3.5 text-blue-500" />}
                 label="Recovery time"
@@ -250,19 +256,14 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
                 label="Critical shipments"
                 value={`${lifeSavingCount} / ${lifeSavingCount} protected`}
               />
-              <MetricPill
-                icon={<Users className="w-3.5 h-3.5 text-violet-500" />}
-                label="Workers"
-                value={`${winnerMatrix?.workerWellBeingScore ?? '—'}/100 well-being`}
-              />
             </div>
 
-            {/* Actions */}
+            {/* Primary Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 pt-1">
               <button
                 onClick={onOpenApproval}
                 disabled={isApproved}
-                className={`flex-1 flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
+                className={`flex-1 flex items-center justify-center space-x-2 py-3 px-5 rounded-xl text-sm font-bold transition-all ${
                   isApproved
                     ? 'bg-green-100 text-green-700 border border-green-300 cursor-default'
                     : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
@@ -275,7 +276,7 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
               {!isApproved && !isRejected && (
                 <button
                   onClick={onRejectApproval}
-                  className="flex items-center justify-center space-x-1.5 py-2.5 px-4 rounded-xl text-sm font-medium bg-white hover:bg-red-50 text-red-500 border border-red-200 transition-colors"
+                  className="flex items-center justify-center space-x-1.5 py-3 px-4 rounded-xl text-sm font-medium bg-white hover:bg-red-50 text-red-500 border border-red-200 transition-colors"
                 >
                   <XCircle className="w-4 h-4" />
                   <span>Reject</span>
@@ -283,28 +284,56 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
               )}
             </div>
 
-            {/* Secondary links */}
-            <div className="flex flex-wrap gap-2 pt-1 border-t border-slate-100">
-              <SecondaryBtn
-                label="See how AI decided"
-                active={activePanel === 'analysis'}
+            {/* Secondary Action Hierarchy */}
+            <div className="pt-2 border-t border-slate-100 space-y-2.5">
+              {/* Primary Secondary Action */}
+              <button
                 onClick={() => onOpenPanel(activePanel === 'analysis' ? null : 'analysis')}
-              />
-              <SecondaryBtn
-                label="See other options"
-                active={activePanel === 'alternatives'}
-                onClick={() => onOpenPanel(activePanel === 'alternatives' ? null : 'alternatives')}
-              />
-              <SecondaryBtn
-                label="Workforce details"
-                active={activePanel === 'workforce'}
-                onClick={() => onOpenPanel(activePanel === 'workforce' ? null : 'workforce')}
-              />
-              <SecondaryBtn
-                label="View audit trail"
-                active={activePanel === 'audit'}
-                onClick={() => onOpenPanel(activePanel === 'audit' ? null : 'audit')}
-              />
+                className={`w-full py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-between border transition-all ${
+                  activePanel === 'analysis'
+                    ? 'bg-blue-50 border-blue-300 text-blue-700'
+                    : 'bg-white border-blue-200 text-blue-700 hover:bg-blue-50/50 hover:border-blue-300 shadow-sm'
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <span className="font-bold text-sm">Why did AI choose this?</span>
+                  <span className="text-[11px] font-normal text-slate-500 hidden sm:inline">— 5 agents verified supplies, routes & workers</span>
+                </div>
+                <div className="flex items-center space-x-1 text-blue-600 font-semibold text-xs">
+                  <span>{activePanel === 'analysis' ? 'Hide explanation' : 'See explanation'}</span>
+                  <ChevronRight className="w-4 h-4" />
+                </div>
+              </button>
+
+              {/* Tertiary Actions */}
+              <div className="flex items-center justify-center space-x-4 pt-0.5 text-xs text-slate-500">
+                <button
+                  onClick={() => onOpenPanel(activePanel === 'alternatives' ? null : 'alternatives')}
+                  className={`hover:text-slate-900 transition-colors ${
+                    activePanel === 'alternatives' ? 'font-bold text-blue-600 underline underline-offset-4' : 'hover:underline'
+                  }`}
+                >
+                  See other options
+                </button>
+                <span className="text-slate-300">·</span>
+                <button
+                  onClick={() => onOpenPanel(activePanel === 'workforce' ? null : 'workforce')}
+                  className={`hover:text-slate-900 transition-colors ${
+                    activePanel === 'workforce' ? 'font-bold text-blue-600 underline underline-offset-4' : 'hover:underline'
+                  }`}
+                >
+                  Workforce
+                </button>
+                <span className="text-slate-300">·</span>
+                <button
+                  onClick={() => onOpenPanel(activePanel === 'audit' ? null : 'audit')}
+                  className={`hover:text-slate-900 transition-colors ${
+                    activePanel === 'audit' ? 'font-bold text-blue-600 underline underline-offset-4' : 'hover:underline'
+                  }`}
+                >
+                  Decision history
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -388,21 +417,4 @@ const MetricPill: React.FC<{
     </div>
     <p className="text-sm font-bold text-slate-800">{value}</p>
   </div>
-);
-
-const SecondaryBtn: React.FC<{
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}> = ({ label, active, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-      active
-        ? 'bg-blue-600 text-white border-blue-600'
-        : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:text-slate-800'
-    }`}
-  >
-    {label}
-  </button>
 );
