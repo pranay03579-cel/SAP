@@ -1,60 +1,88 @@
 @import "tailwindcss";
 
 @theme {
-  --color-sap-dark: #0B111E;
-  --color-sap-card: #131D31;
-  --color-sap-border: #1E2D4A;
-  --color-sap-muted: #8B9BB4;
-  --color-sap-accent: #0A84FF;
-  --color-sap-gold: #F5A623;
-  --color-sap-emerald: #30D158;
-  --color-sap-crimson: #FF453A;
-  --color-sap-cyan: #64D2FF;
-  --color-sap-purple: #BF5AF2;
+  /* ── Light page tokens (used by new Phase 12 components) ──────── */
+  --color-bg:           #F8F9FB;
+  --color-surface:      #FFFFFF;
+  --color-border:       #E2E8F0;
+  --color-border-strong:#CBD5E1;
 
+  --color-text-primary: #0F172A;
+  --color-text-secondary:#475569;
+  --color-text-muted:   #94A3B8;
+
+  --color-accent:       #2563EB;
+  --color-accent-light: #EFF6FF;
+  --color-accent-mid:   #DBEAFE;
+
+  --color-danger:       #DC2626;
+  --color-danger-light: #FEF2F2;
+  --color-danger-mid:   #FEE2E2;
+
+  --color-success:      #16A34A;
+  --color-success-light:#F0FDF4;
+  --color-success-mid:  #DCFCE7;
+
+  --color-warning:      #D97706;
+  --color-warning-light:#FFFBEB;
+  --color-warning-mid:  #FEF3C7;
+
+  /* ── Legacy SAP dark tokens (used by dark-mode panels: RecoveryComparison,
+         WorkforceRosterView, AuditLedgerView, AgentTimeline etc.)
+         Keep these as DARK values so dark panel components render correctly. ─ */
+  --color-sap-dark:    #0F172A;   /* slate-950 — dark panel background */
+  --color-sap-card:    #1E293B;   /* slate-800 — dark card surface      */
+  --color-sap-border:  #334155;   /* slate-700 — dark border            */
+  --color-sap-muted:   #94A3B8;   /* slate-400 — dark muted text        */
+  --color-sap-accent:  #2563EB;   /* blue-600                           */
+  --color-sap-gold:    #D97706;   /* amber-600                          */
+  --color-sap-emerald: #10B981;   /* emerald-500                        */
+  --color-sap-crimson: #EF4444;   /* red-500                            */
+  --color-sap-cyan:    #06B6D4;   /* cyan-500                           */
+  --color-sap-purple:  #8B5CF6;   /* violet-500                         */
+
+  /* ── Typography ─────────────────────────────────────────────────── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
+/* ── Base (light page) ──────────────────────────────────────────── */
 body {
-  background-color: #0B111E;
-  color: #F8FAFC;
+  background-color: #F8F9FB;
+  color: #0F172A;
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Glassmorphism Panels */
+/* ── Light card ─────────────────────────────────────────────────── */
+.card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+}
+
+.card-hover {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.card-hover:hover {
+  border-color: #93C5FD;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+/* ── glass-panel — DARK (used by dark-mode secondary panels) ─────── */
 .glass-panel {
-  background-color: rgba(19, 29, 49, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(30, 45, 74, 0.85);
+  background-color: #1E293B;   /* sap-card dark */
+  border: 1px solid #334155;   /* sap-border dark */
 }
-
-.glass-panel-hover {
-  transition: all 0.2s ease-in-out;
-}
-
 .glass-panel-hover:hover {
-  background-color: rgba(24, 38, 64, 0.95);
-  border-color: rgba(10, 132, 255, 0.5);
-  transform: translateY(-1px);
+  border-color: #475569;
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+/* ── Scrollbars ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #F1F5F9; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2563EB; }
 
-::-webkit-scrollbar-track {
-  background: #0B111E;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #1E2D4A;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #0A84FF;
-}
+/* ── Utility ────────────────────────────────────────────────────── */
+.text-balance { text-wrap: balance; }

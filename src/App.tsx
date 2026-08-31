@@ -1,183 +1,74 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MOCK_DISRUPTION_CASE } from '../shared/mock/disruptionCase';
-import { Case, AgentExecution, Approval, ApprovalStatus, AgentName } from '../shared/types/domain';
-import { pipelineOrchestrator, AgentStatusMap } from './services/orchestrator';
+import { Case, AgentExecution, Approval, ApprovalStatus } from '../shared/types/domain';
+import { pipelineOrchestrator } from './services/orchestrator';
+
+// ── Core layout ──────────────────────────────────────────────────────────────
 import { Header } from './components/Header';
-import { ExecutiveDashboard } from './components/ExecutiveDashboard';
-import { DisruptionDetails } from './components/DisruptionDetails';
-import { AgentTimeline } from './components/AgentTimeline';
-import { AgentDetailPanel } from './components/AgentDetailPanel';
-import { RecoveryComparison } from './components/RecoveryComparison';
-import { FinalDecisionPanel } from './components/FinalDecisionPanel';
-import { HumanApprovalModal } from './components/HumanApprovalModal';
-import { WorkforceRosterView } from './components/WorkforceRosterView';
-import { AuditLedgerView } from './components/AuditLedgerView';
 import { IntegrationModeBanner } from './components/IntegrationModeBanner';
+
+// ── Primary view ─────────────────────────────────────────────────────────────
+import { ControlTower } from './components/ControlTower';
+
+// ── Secondary detail panels ────────────────────────────────────────────
+import { SimpleAgentTimeline } from './components/SimpleAgentTimeline';
+import { SimpleScenarioComparison } from './components/SimpleScenarioComparison';
+import { SimpleWorkforceView } from './components/SimpleWorkforceView';
+import { SimpleAuditView } from './components/SimpleAuditView';
+
+// ── Modals ────────────────────────────────────────────────────────────────────
+import { HumanApprovalModal } from './components/HumanApprovalModal';
+import { AgentDetailPanel } from './components/AgentDetailPanel';
+
+// ── Panel type ────────────────────────────────────────────────────────────────
+type ActivePanel = 'analysis' | 'alternatives' | 'workforce' | 'audit' | null;
 
 export default function App() {
   const integrationMode = pipelineOrchestrator.getIntegrationMode();
+
+  // ── Case & pipeline state ──────────────────────────────────────────────────
   const [currentCase, setCurrentCase] = useState<Case>(MOCK_DISRUPTION_CASE);
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [activePanel, setActivePanel] = useState<ActivePanel>(null);
   const [selectedExecution, setSelectedExecution] = useState<AgentExecution | null>(null);
   const [isApprovalOpen, setIsApprovalOpen] = useState<boolean>(false);
-  const [isWorkforceOpen, setIsWorkforceOpen] = useState<boolean>(false);
 
-  // Orchestrator State
   const [isPipelineRunning, setIsPipelineRunning] = useState<boolean>(false);
-  const [agentStatuses, setAgentStatuses] = useState<AgentStatusMap>(() =>
-    pipelineOrchestrator.getAgentStatusMap(MOCK_DISRUPTION_CASE)
-  );
-  const [pipelineToast, setPipelineToast] = useState<{ message: string; type: 'info' | 'success' | 'error' } | null>(null);
+  const [pipelineToast, setPipelineToast] = useState<{
+    message: string;
+    type: 'info' | 'success' | 'error';
+  } | null>(null);
 
-  // Sync statuses whenever case changes
-  useEffect(() => {
-    setAgentStatuses(pipelineOrchestrator.getAgentStatusMap(currentCase));
-  }, [currentCase]);
+  // ── Derived ────────────────────────────────────────────────────────────────
+  const isPipelineComplete = !!currentCase.decision;
 
-  // Show temporary toast
+  // ── Toast helper ──────────────────────────────────────────────────────────
   const showToast = (message: string, type: 'info' | 'success' | 'error' = 'info') => {
     setPipelineToast({ message, type });
     setTimeout(() => setPipelineToast(null), 4000);
   };
 
-  // Run Full Pipeline
+  // ── Pipeline handlers (logic unchanged) ────────────────────────────────────
   const handleRunFullPipeline = async () => {
     setIsPipelineRunning(true);
-    showToast('Starting autonomous 5-agent recovery pipeline...', 'info');
-
+    showToast('Starting autonomous 5-agent recovery pipeline…', 'info');
     try {
       const resultCase = await pipelineOrchestrator.executePipeline(
         currentCase,
         { stepDelayMs: 400 },
-        (update, updatedCase) => {
-          setAgentStatuses((prev) => ({
-            ...prev,
-            [update.agentName]: update.status,
-          }));
+        (_update, updatedCase) => {
           setCurrentCase({ ...updatedCase });
         }
       );
       setCurrentCase(resultCase);
-      showToast('Multi-Agent Analysis Completed Successfully! Decision ready for review.', 'success');
+      showToast('Multi-Agent Analysis Completed! Decision ready for review.', 'success');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      showToast(msg, 'error');
+      showToast(err instanceof Error ? err.message : String(err), 'error');
     } finally {
       setIsPipelineRunning(false);
     }
   };
 
-  // Run Next Pending Step
-  const handleRunSingleStep = async () => {
-    const nextAgent = pipelineOrchestrator.agentSequence.find(
-      (name) => agentStatuses[name] === 'PENDING' || agentStatuses[name] === 'FAILED'
-    );
-    if (!nextAgent) {
-      showToast('All agents have already completed.', 'info');
-      return;
-    }
-
-    setIsPipelineRunning(true);
-    setAgentStatuses((prev) => ({ ...prev, [nextAgent]: 'RUNNING' }));
-
-    try {
-      const updated = await pipelineOrchestrator.executeStep(currentCase, nextAgent);
-      setCurrentCase(updated);
-      setAgentStatuses((prev) => ({ ...prev, [nextAgent]: 'COMPLETED' }));
-      showToast(`Step "${nextAgent}" completed successfully.`, 'success');
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setAgentStatuses((prev) => ({ ...prev, [nextAgent]: 'FAILED' }));
-      showToast(`Step failed: ${msg}`, 'error');
-    } finally {
-      setIsPipelineRunning(false);
-    }
-  };
-
-  // Simulate Fault Injection
-  const handleSimulateFault = async (agentName: AgentName) => {
-    setIsPipelineRunning(true);
-    showToast(`Injecting chaos fault into ${agentName}...`, 'info');
-
-    try {
-      await pipelineOrchestrator.executePipeline(
-        currentCase,
-        {
-          stepDelayMs: 200,
-          injectedFaults: {
-            [agentName]: 'Simulated SAP SuccessFactors timeout — worker roster locked',
-          },
-        },
-        (update, updatedCase) => {
-          setAgentStatuses((prev) => ({
-            ...prev,
-            [update.agentName]: update.status,
-          }));
-          setCurrentCase({ ...updatedCase });
-        }
-      );
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      showToast(`Handled Fault: ${msg}`, 'error');
-    } finally {
-      setIsPipelineRunning(false);
-    }
-  };
-
-  // Retry Pipeline
-  const handleRetryPipeline = async () => {
-    setIsPipelineRunning(true);
-    showToast('Retrying pipeline from point of failure...', 'info');
-
-    try {
-      const resultCase = await pipelineOrchestrator.retryPipeline(
-        currentCase,
-        { stepDelayMs: 400 },
-        (update, updatedCase) => {
-          setAgentStatuses((prev) => ({
-            ...prev,
-            [update.agentName]: update.status,
-          }));
-          setCurrentCase({ ...updatedCase });
-        }
-      );
-      setCurrentCase(resultCase);
-      showToast('Pipeline recovered and completed successfully!', 'success');
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      showToast(`Retry failed: ${msg}`, 'error');
-    } finally {
-      setIsPipelineRunning(false);
-    }
-  };
-
-  // Reset Case State
-  const handleResetCase = () => {
-    const freshCase = pipelineOrchestrator.createInitialCase();
-    setCurrentCase(freshCase);
-    setAgentStatuses({
-      'Disruption Agent': 'PENDING',
-      'Supply Chain Impact Agent': 'PENDING',
-      'Workforce Agent': 'PENDING',
-      'Recovery Adaptation Agent': 'PENDING',
-      'Decision Agent': 'PENDING',
-    });
-    showToast('Case reset to initial un-analyzed state.', 'info');
-  };
-
-  // Agent Selection Helper
-  const handleSelectAgentByName = (agentName: string) => {
-    const found = currentCase.agentHistory.historyLedger.find(
-      (exec) => exec.agentName === agentName
-    );
-    if (found) {
-      setSelectedExecution(found);
-    } else {
-      setActiveTab('agents');
-    }
-  };
-
-  // Scenario Selection for Approval
+  // ── Scenario selection for approval ───────────────────────────────────────
   const handleSelectScenarioForApproval = (scenarioId: string) => {
     if (currentCase.decision) {
       const scenario = currentCase.candidateScenarios?.find((s) => s.scenarioId === scenarioId);
@@ -197,15 +88,10 @@ export default function App() {
     setIsApprovalOpen(true);
   };
 
-  // Build a fresh Approval record if none exists yet (e.g. after Reset → Run Pipeline)
+  // ── Approval helpers ───────────────────────────────────────────────────────
   const buildApproval = (prev: Case, status: ApprovalStatus, notes: string): Approval => {
     if (prev.approval) {
-      return {
-        ...prev.approval,
-        status,
-        reviewNotes: notes,
-        approvedAt: new Date().toISOString(),
-      };
+      return { ...prev.approval, status, reviewNotes: notes, approvedAt: new Date().toISOString() };
     }
     return {
       approvalId: `APP-${prev.caseId}-${Date.now()}`,
@@ -225,7 +111,6 @@ export default function App() {
     };
   };
 
-  // Confirm Approval / Rejection
   const handleConfirmApproval = (status: ApprovalStatus, notes: string) => {
     setCurrentCase((prev) => ({
       ...prev,
@@ -238,162 +123,153 @@ export default function App() {
     setCurrentCase((prev) => ({
       ...prev,
       status: 'REJECTED',
-      approval: buildApproval(prev, 'REJECTED', 'Rejected by operator. Requires alternative highway or rail bypass.'),
+      approval: buildApproval(
+        prev,
+        'REJECTED',
+        'Rejected by operator. Requires alternative highway or rail bypass.'
+      ),
     }));
   };
 
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-sap-dark text-slate-100 flex flex-col selection:bg-sap-accent selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+
       {/* Integration Mode Banner — always visible */}
       <IntegrationModeBanner info={integrationMode} />
 
-      {/* Top Header */}
-      <Header
-        currentCase={currentCase}
-        activeTab={activeTab}
-        setActiveTab={(tab) => {
-          setActiveTab(tab);
-          setIsWorkforceOpen(false);
-        }}
-        onOpenApproval={() => setIsApprovalOpen(true)}
-        onOpenWorkforce={() => setIsWorkforceOpen(true)}
-      />
+      {/* Simplified Header */}
+      <Header currentCase={currentCase} onOpenApproval={() => setIsApprovalOpen(true)} />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        {/* Toast Notification Banner */}
+      {/* Main Content */}
+      <main className="flex-1 w-full px-4 sm:px-6 py-6 space-y-4">
+
+        {/* Toast Notification */}
         {pipelineToast && (
           <div
-            className={`p-3.5 rounded-xl text-xs font-semibold flex items-center justify-between shadow-lg transition-all animate-in fade-in ${
+            className={`max-w-5xl mx-auto p-3.5 rounded-xl text-xs font-medium flex items-center justify-between shadow-sm border ${
               pipelineToast.type === 'error'
-                ? 'bg-red-950/80 border border-red-500 text-red-200 shadow-red-500/20'
+                ? 'bg-red-50 border-red-200 text-red-700'
                 : pipelineToast.type === 'success'
-                ? 'bg-emerald-950/80 border border-emerald-500 text-emerald-200 shadow-emerald-500/20'
-                : 'bg-blue-950/80 border border-sap-accent text-blue-200 shadow-blue-500/20'
+                ? 'bg-green-50 border-green-200 text-green-700'
+                : 'bg-blue-50 border-blue-200 text-blue-700'
             }`}
           >
             <span>{pipelineToast.message}</span>
             <button
               onClick={() => setPipelineToast(null)}
-              className="text-xs opacity-70 hover:opacity-100 ml-4 font-mono"
+              className="text-xs opacity-60 hover:opacity-100 ml-4"
             >
               ✕
             </button>
           </div>
         )}
 
-        {/* Status Notification if Approved or Rejected */}
+        {/* Approval / Rejection Status Banner */}
         {currentCase.status === 'APPROVED' && (
-          <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/50 flex items-center justify-between text-xs text-emerald-300 animate-in fade-in">
+          <div className="max-w-5xl mx-auto p-3.5 rounded-xl bg-green-50 border border-green-200 flex items-center justify-between text-xs text-green-700">
             <div className="flex items-center space-x-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="font-bold uppercase tracking-wider">
-                Recovery Plan Approved (Simulated Dispatch)
-              </span>
-              <span>— Prepared simulated actions: SAP S/4HANA PO route updates & SAP SuccessFactors workforce roster lock.</span>
+              <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="font-bold uppercase tracking-wider">Recovery Plan Approved</span>
+              <span className="text-green-600">— Simulated dispatch confirmed (MOCK MODE)</span>
             </div>
-            <span className="font-mono text-emerald-400 font-semibold">
-              Status: SIMULATED_DISPATCH_CONFIRMED
-            </span>
+            <span className="font-mono text-green-600 font-semibold text-[10px]">SIMULATED_DISPATCH_CONFIRMED</span>
           </div>
         )}
 
         {currentCase.status === 'REJECTED' && (
-          <div className="p-4 rounded-xl bg-red-950/40 border border-red-500/50 flex items-center justify-between text-xs text-red-300 animate-in fade-in">
+          <div className="max-w-5xl mx-auto p-3.5 rounded-xl bg-red-50 border border-red-200 flex items-center justify-between text-xs text-red-700">
             <div className="flex items-center space-x-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-400"></span>
-              <span className="font-bold uppercase tracking-wider">
-                Recovery Plan Rejected by Operator
-              </span>
-              <span>— Action plan halted. Multi-agent engine awaiting revised constraints.</span>
+              <span className="h-2 w-2 rounded-full bg-red-500" />
+              <span className="font-bold uppercase tracking-wider">Recovery Plan Rejected</span>
+              <span>— Awaiting revised operator decision.</span>
             </div>
             <button
               onClick={() => setIsApprovalOpen(true)}
-              className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 rounded border border-red-500/40 font-semibold text-[11px]"
+              className="px-3 py-1 bg-red-100 hover:bg-red-200 rounded-lg border border-red-300 font-semibold text-[11px] transition-colors"
             >
-              Re-open Governance
+              Re-open Review
             </button>
           </div>
         )}
 
-        {/* View Switcher */}
-        {isWorkforceOpen ? (
-          <WorkforceRosterView currentCase={currentCase} />
-        ) : (
-          <>
-            {activeTab === 'dashboard' && (
-              <div className="space-y-6">
-                <ExecutiveDashboard
-                  currentCase={currentCase}
-                  onNavigateTab={setActiveTab}
-                  onOpenApproval={() => setIsApprovalOpen(true)}
-                  onSelectAgent={handleSelectAgentByName}
-                />
-                {currentCase.decision && (
-                  <FinalDecisionPanel
-                    currentCase={currentCase}
-                    onNavigateTab={setActiveTab}
-                    onOpenApproval={() => setIsApprovalOpen(true)}
-                    onRejectApproval={handleQuickReject}
-                  />
-                )}
-              </div>
-            )}
+        {/* ── PRIMARY VIEW: Control Tower ──────────────────────────────── */}
+        <ControlTower
+          currentCase={currentCase}
+          activePanel={activePanel}
+          onOpenPanel={setActivePanel}
+          onOpenApproval={() => setIsApprovalOpen(true)}
+          onRejectApproval={handleQuickReject}
+          isPipelineComplete={isPipelineComplete}
+          isPipelineRunning={isPipelineRunning}
+          onRunFullPipeline={handleRunFullPipeline}
+        />
 
-            {activeTab === 'disruption' && (
-              <DisruptionDetails currentCase={currentCase} />
-            )}
+        {/* ── SECONDARY DETAIL PANELS (Progressive Disclosure) ─────────── */}
 
-            {activeTab === 'agents' && (
-              <AgentTimeline
-                currentCase={currentCase}
-                agentStatuses={agentStatuses}
-                isPipelineRunning={isPipelineRunning}
-                onSelectExecution={(exec) => setSelectedExecution(exec)}
-                onRunFullPipeline={handleRunFullPipeline}
-                onRunSingleStep={handleRunSingleStep}
-                onSimulateFault={handleSimulateFault}
-                onRetryPipeline={handleRetryPipeline}
-                onResetCase={handleResetCase}
-              />
-            )}
+        {/* Panel: How AI Decided — Simple Agent Timeline (primary) */}
+        {activePanel === 'analysis' && (
+          <div className="max-w-5xl mx-auto space-y-3">
+            <PanelHeader
+              title="How the AI reached this decision"
+              subtitle="Plain-language summary from each of the 5 agents"
+              onClose={() => setActivePanel(null)}
+            />
+            <SimpleAgentTimeline
+              currentCase={currentCase}
+              onOpenFullDetail={() => setActivePanel('analysis')}
+            />
+          </div>
+        )}
 
-            {activeTab === 'scenarios' && (
-              <div className="space-y-6">
-                <RecoveryComparison
-                  currentCase={currentCase}
-                  onSelectScenarioForApproval={handleSelectScenarioForApproval}
-                />
-                {currentCase.decision && (
-                  <FinalDecisionPanel
-                    currentCase={currentCase}
-                    onNavigateTab={setActiveTab}
-                    onOpenApproval={() => setIsApprovalOpen(true)}
-                    onRejectApproval={handleQuickReject}
-                  />
-                )}
-              </div>
-            )}
+        {/* Panel: See Other Options — Scenario Comparison */}
+        {activePanel === 'alternatives' && (
+          <div className="max-w-2xl mx-auto space-y-3">
+            <PanelHeader
+              title="Other recovery options"
+              subtitle="All 3 options scored across 7 criteria"
+              onClose={() => setActivePanel(null)}
+            />
+            <SimpleScenarioComparison
+              currentCase={currentCase}
+              onSelectScenarioForApproval={handleSelectScenarioForApproval}
+            />
+          </div>
+        )}
 
-            {activeTab === 'workforce' && (
-              <WorkforceRosterView currentCase={currentCase} />
-            )}
+        {/* Panel: Workforce Details */}
+        {activePanel === 'workforce' && (
+          <div className="max-w-2xl mx-auto space-y-3">
+            <PanelHeader
+              title="Workforce details"
+              subtitle="Availability, skill gaps, accommodations, redeployments"
+              onClose={() => setActivePanel(null)}
+            />
+            <SimpleWorkforceView currentCase={currentCase} />
+          </div>
+        )}
 
-            {activeTab === 'audit' && (
-              <AuditLedgerView
-                currentCase={currentCase}
-                onSelectExecution={(exec) => setSelectedExecution(exec)}
-              />
-            )}
-          </>
+        {/* Panel: Audit Trail */}
+        {activePanel === 'audit' && (
+          <div className="max-w-2xl mx-auto space-y-3">
+            <PanelHeader
+              title="Audit trail"
+              subtitle="Every agent action, assumption, and evidence item"
+              onClose={() => setActivePanel(null)}
+            />
+            <SimpleAuditView
+              currentCase={currentCase}
+              onSelectExecution={(exec) => setSelectedExecution(exec)}
+            />
+          </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-sap-border/60 py-4 bg-sap-card/60 text-xs text-sap-muted text-center">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>SAP Sentinel Control Tower · SAP HackFest 2026 (North Region — Chandigarh University)</span>
-          <span className="font-mono text-[11px]">Track 1: Resilient Supply Chains × Track 2: Inclusive Workforce</span>
+      <footer className="border-t border-slate-200 py-3 bg-white text-xs text-slate-500 text-center">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>SAP Sentinel · SAP HackFest 2026 · Chandigarh University</span>
+          <span className="font-mono text-[10px]">Track 1: Supply Chains · Track 2: Inclusive Workforce</span>
         </div>
       </footer>
 
@@ -413,3 +289,23 @@ export default function App() {
     </div>
   );
 }
+
+// ─── Panel Header ───────────────────────────────────────────────────────────────────────────────
+const PanelHeader: React.FC<{
+  title: string;
+  subtitle: string;
+  onClose: () => void;
+}> = ({ title, subtitle, onClose }) => (
+  <div className="flex items-center justify-between py-3 px-4 bg-white border border-slate-200 rounded-t-xl border-b-0">
+    <div>
+      <h3 className="text-sm font-bold text-slate-900">{title}</h3>
+      <p className="text-[11px] text-slate-400 mt-0.5">{subtitle}</p>
+    </div>
+    <button
+      onClick={onClose}
+      className="flex items-center space-x-1.5 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors"
+    >
+      <span>← Back</span>
+    </button>
+  </div>
+);

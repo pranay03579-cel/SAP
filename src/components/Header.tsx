@@ -1,181 +1,73 @@
 import React from 'react';
-import { 
-  ShieldAlert, 
-  Activity, 
-  Layers, 
-  GitPullRequest, 
-  Users, 
-  History, 
-  CheckCircle2, 
-  Clock, 
-  MapPin 
-} from 'lucide-react';
+import { ShieldAlert, CheckCircle2, Clock, MapPin } from 'lucide-react';
 import { Case } from '../../shared/types/domain';
 
 interface HeaderProps {
   currentCase: Case;
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
   onOpenApproval: () => void;
-  onOpenWorkforce: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  currentCase,
-  activeTab,
-  setActiveTab,
-  onOpenApproval,
-  onOpenWorkforce,
-}) => {
+export const Header: React.FC<HeaderProps> = ({ currentCase, onOpenApproval }) => {
   const isApproved = currentCase.status === 'APPROVED';
+  const disruption = currentCase.disruption;
 
   return (
-    <header className="border-b border-sap-border bg-sap-card/90 backdrop-blur-md sticky top-0 z-40">
-      {/* Top Banner: Status & Context */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
-        {/* Left: Branding & Case Title */}
+    <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+
+        {/* Brand */}
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-sap-accent to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-            <ShieldAlert className="w-6 h-6 text-white" />
+          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-sm flex-shrink-0">
+            <ShieldAlert className="w-4.5 h-4.5 text-white" style={{ width: 18, height: 18 }} />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
-                SAP SENTINEL
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-sap-accent border border-blue-500/20">
-                  CONTROL TOWER
-                </span>
+              <span className="text-sm font-bold text-slate-900 tracking-tight">SAP Sentinel</span>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                Control Tower
               </span>
-              <span className="text-xs text-sap-muted font-mono">v1.0.0</span>
             </div>
-            <p className="text-xs text-sap-muted">
-              Supply-Chain Disruption Recovery & Inclusive Workforce Resilience
+            <p className="text-[10px] text-slate-400 leading-none mt-0.5">
+              Supply-Chain Resilience · Inclusive Workforce
             </p>
           </div>
         </div>
 
-        {/* Middle: Live Corridor Telemetry */}
-        <div className="hidden lg:flex items-center space-x-6 bg-sap-dark/80 px-4 py-2 rounded-lg border border-sap-border/60">
-          <div className="flex items-center space-x-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+        {/* Live disruption pulse (compact, center) */}
+        <div className="hidden md:flex items-center space-x-4 text-xs text-slate-500">
+          <div className="flex items-center space-x-1.5">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
             </span>
-            <span className="text-xs font-semibold text-red-400 uppercase tracking-wider">
-              {currentCase.disruption?.severity || 'CRITICAL'} DISRUPTION
+            <span className="font-semibold text-red-600 uppercase tracking-wide text-[10px]">
+              {disruption?.severity ?? 'CRITICAL'} DISRUPTION
             </span>
           </div>
-          <div className="h-4 w-px bg-sap-border"></div>
-          <div className="flex items-center space-x-1.5 text-xs text-slate-300">
-            <MapPin className="w-3.5 h-3.5 text-sap-accent" />
-            <span>NH-27 Dima Hasao, Assam (Barak Valley Corridor)</span>
+          <span className="text-slate-300">|</span>
+          <div className="flex items-center space-x-1">
+            <MapPin className="w-3 h-3 text-blue-500" />
+            <span>{disruption?.location?.name ?? 'NH-27 Dima Hasao'}</span>
           </div>
-          <div className="h-4 w-px bg-sap-border"></div>
-          <div className="flex items-center space-x-1.5 text-xs text-slate-300">
-            <Clock className="w-3.5 h-3.5 text-sap-gold" />
-            <span className="font-mono">84h Road Blockade</span>
+          <span className="text-slate-300">|</span>
+          <div className="flex items-center space-x-1">
+            <Clock className="w-3 h-3 text-amber-500" />
+            <span className="font-mono">{disruption?.estimatedBlockedDurationHours ?? 84}h blocked</span>
           </div>
         </div>
 
-        {/* Right: Quick Action & Status */}
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={onOpenWorkforce}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium bg-sap-card hover:bg-slate-800 border border-sap-border hover:border-sap-accent text-slate-200 rounded-lg transition-colors"
-          >
-            <Users className="w-3.5 h-3.5 text-sap-cyan" />
-            <span>Inclusive Workforce (50)</span>
-          </button>
-
-          <button
-            onClick={onOpenApproval}
-            className={`flex items-center space-x-1.5 px-4 py-1.5 text-xs font-semibold rounded-lg shadow-md transition-all ${
-              isApproved
-                ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40'
-                : 'bg-sap-accent hover:bg-blue-600 text-white shadow-blue-500/20'
-            }`}
-          >
-            <CheckCircle2 className="w-4 h-4" />
-            <span>{isApproved ? 'Approved & Locked' : 'Review & Approve (HITL)'}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Navigation Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-sap-border/60">
-        <nav className="flex space-x-1 sm:space-x-4">
-          <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`py-3 px-3 sm:px-4 text-xs font-semibold border-b-2 flex items-center space-x-2 transition-colors ${
-              activeTab === 'dashboard'
-                ? 'border-sap-accent text-sap-accent bg-blue-500/5'
-                : 'border-transparent text-sap-muted hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <Activity className="w-4 h-4" />
-            <span>Executive Cockpit</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('disruption')}
-            className={`py-3 px-3 sm:px-4 text-xs font-semibold border-b-2 flex items-center space-x-2 transition-colors ${
-              activeTab === 'disruption'
-                ? 'border-sap-accent text-sap-accent bg-blue-500/5'
-                : 'border-transparent text-sap-muted hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <ShieldAlert className="w-4 h-4" />
-            <span>Disruption & Asset Risk</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('agents')}
-            className={`py-3 px-3 sm:px-4 text-xs font-semibold border-b-2 flex items-center space-x-2 transition-colors ${
-              activeTab === 'agents'
-                ? 'border-sap-accent text-sap-accent bg-blue-500/5'
-                : 'border-transparent text-sap-muted hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>Multi-Agent Workflow (5)</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('scenarios')}
-            className={`py-3 px-3 sm:px-4 text-xs font-semibold border-b-2 flex items-center space-x-2 transition-colors ${
-              activeTab === 'scenarios'
-                ? 'border-sap-accent text-sap-accent bg-blue-500/5'
-                : 'border-transparent text-sap-muted hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <GitPullRequest className="w-4 h-4" />
-            <span>Scenario Comparison (3)</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('workforce')}
-            className={`py-3 px-3 sm:px-4 text-xs font-semibold border-b-2 flex items-center space-x-2 transition-colors ${
-              activeTab === 'workforce'
-                ? 'border-sap-accent text-sap-accent bg-blue-500/5'
-                : 'border-transparent text-sap-muted hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span>Inclusive Workforce (Track 2)</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('audit')}
-            className={`py-3 px-3 sm:px-4 text-xs font-semibold border-b-2 flex items-center space-x-2 transition-colors ${
-              activeTab === 'audit'
-                ? 'border-sap-accent text-sap-accent bg-blue-500/5'
-                : 'border-transparent text-sap-muted hover:text-slate-200 hover:border-slate-700'
-            }`}
-          >
-            <History className="w-4 h-4" />
-            <span>Immutable Audit Ledger</span>
-          </button>
-        </nav>
+        {/* Primary action */}
+        <button
+          onClick={onOpenApproval}
+          className={`flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-xl transition-all flex-shrink-0 ${
+            isApproved
+              ? 'bg-green-50 text-green-700 border border-green-300'
+              : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-200'
+          }`}
+        >
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          <span>{isApproved ? 'Approved & Locked' : 'Review & Approve'}</span>
+        </button>
       </div>
     </header>
   );

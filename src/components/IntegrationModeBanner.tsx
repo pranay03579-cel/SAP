@@ -34,11 +34,11 @@ export const IntegrationModeBanner: React.FC<IntegrationModeBannerProps> = ({ in
       role="status"
       aria-label={`Integration mode: ${info.modeLabel}`}
       className={`
-        w-full px-4 py-2 flex items-center gap-3 text-xs font-mono
+        w-full px-4 py-1.5 flex items-center gap-3 text-[11px] font-mono
         border-b
         ${isMock
-          ? 'bg-amber-950/60 border-amber-700/50 text-amber-300'
-          : 'bg-emerald-950/60 border-emerald-700/50 text-emerald-300'
+          ? 'bg-amber-50 border-amber-200 text-amber-700'
+          : 'bg-green-50 border-green-200 text-green-700'
         }
       `}
     >
@@ -46,14 +46,14 @@ export const IntegrationModeBanner: React.FC<IntegrationModeBannerProps> = ({ in
       <span className="relative flex h-2 w-2 flex-shrink-0">
         <span
           className={`
-            animate-ping absolute inline-flex h-full w-full rounded-full opacity-75
-            ${isMock ? 'bg-amber-400' : 'bg-emerald-400'}
+            animate-ping absolute inline-flex h-full w-full rounded-full opacity-60
+            ${isMock ? 'bg-amber-400' : 'bg-green-400'}
           `}
         />
         <span
           className={`
             relative inline-flex rounded-full h-2 w-2
-            ${isMock ? 'bg-amber-500' : 'bg-emerald-500'}
+            ${isMock ? 'bg-amber-500' : 'bg-green-500'}
           `}
         />
       </span>
@@ -61,10 +61,10 @@ export const IntegrationModeBanner: React.FC<IntegrationModeBannerProps> = ({ in
       {/* Mode label */}
       <span
         className={`
-          font-bold tracking-widest uppercase px-2 py-0.5 rounded text-xs
+          font-bold tracking-widest uppercase px-2 py-0.5 rounded text-[10px]
           ${isMock
-            ? 'bg-amber-500/20 text-amber-300 border border-amber-600/40'
-            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-600/40'
+            ? 'bg-amber-100 text-amber-700 border border-amber-300'
+            : 'bg-green-100 text-green-700 border border-green-300'
           }
         `}
       >
@@ -72,13 +72,13 @@ export const IntegrationModeBanner: React.FC<IntegrationModeBannerProps> = ({ in
       </span>
 
       {/* SAP Integration status */}
-      <span className="opacity-70">
+      <span className="opacity-80">
         SAP INTEGRATION:{' '}
         <span
           className={`font-semibold ${
             info.sapIntegrationStatus === 'NOT_CONFIGURED'
-              ? 'text-amber-400'
-              : 'text-emerald-400'
+              ? 'text-amber-600'
+              : 'text-green-600'
           }`}
         >
           {info.sapIntegrationStatus.replace(/_/g, ' ')}
