@@ -32,7 +32,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
   return (
     <div className="space-y-6">
       {/* 1. Critical Disruption Alert Banner */}
-      <div className="glass-panel rounded-xl p-5 border-l-4 border-l-red-500 relative overflow-hidden bg-gradient-to-r from-red-950/30 via-sap-card to-sap-card">
+      <div className="bg-slate-900 rounded-md p-5 border-l-4 border-l-red-500 relative overflow-hidden border border-slate-800">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start space-x-4">
             <div className="p-3 bg-red-500/20 rounded-xl border border-red-500/30 text-red-400 mt-0.5">
@@ -77,7 +77,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
       </div>
 
       {/* 30-Second Executive Briefing Matrix (Hackathon Judge Overview) */}
-      <div className="glass-panel p-5 rounded-2xl border border-sap-border bg-sap-card/90 shadow-xl space-y-3">
+      <div className="bg-slate-900 p-5 rounded-md border border-slate-800 space-y-3">
         <div className="flex items-center justify-between border-b border-sap-border/60 pb-3">
           <div className="flex items-center space-x-2">
             <span className="p-1 bg-sap-accent/20 text-sap-accent rounded">
@@ -257,14 +257,14 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
       </div>
 
       {/* 3. Recommended Recovery Action & Decision Highlight */}
-      <div className="glass-panel rounded-xl p-6 border border-blue-500/30 bg-gradient-to-br from-blue-950/20 via-sap-card to-sap-card shadow-xl">
+      <div className="bg-slate-900 rounded-md p-6 border border-slate-800 space-y-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3 max-w-3xl">
             <div className="flex items-center space-x-2">
-              <span className="p-1.5 bg-sap-accent/20 text-sap-accent rounded-md">
+              <span className="p-1.5 bg-blue-500/20 text-blue-400 rounded-md">
                 <Sparkles className="w-4 h-4" />
               </span>
-              <span className="text-xs font-bold uppercase tracking-wider text-sap-accent">
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
                 Autonomous Recovery Recommendation
               </span>
               <span className="px-2 py-0.5 text-xs font-semibold bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">
@@ -281,18 +281,18 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-              <div className="bg-sap-dark/60 p-3 rounded-lg border border-sap-border">
-                <span className="text-xs text-sap-muted block">Clinical Delivery</span>
+              <div className="bg-slate-800 p-3 rounded border border-slate-700">
+                <span className="text-xs text-slate-400 block">Clinical Delivery</span>
                 <span className="text-base font-bold text-emerald-400">8 Hours (GAU → IXS)</span>
                 <span className="text-xs text-slate-400 block mt-0.5">20h ahead of stockout</span>
               </div>
-              <div className="bg-sap-dark/60 p-3 rounded-lg border border-sap-border">
-                <span className="text-xs text-sap-muted block">Logistics Cost</span>
+              <div className="bg-slate-800 p-3 rounded border border-slate-700">
+                <span className="text-xs text-slate-400 block">Logistics Cost</span>
                 <span className="text-base font-bold text-white">₹12.80 Lakhs</span>
                 <span className="text-xs text-emerald-400 block mt-0.5">63% savings vs Air Charter</span>
               </div>
-              <div className="bg-sap-dark/60 p-3 rounded-lg border border-sap-border">
-                <span className="text-xs text-sap-muted block">Worker Well-Being Score</span>
+              <div className="bg-slate-800 p-3 rounded border border-slate-700">
+                <span className="text-xs text-slate-400 block">Worker Well-Being Score</span>
                 <span className="text-base font-bold text-emerald-400">94.5 / 100</span>
                 <span className="text-xs text-slate-400 block mt-0.5">Zero overtime exceedance</span>
               </div>
@@ -300,9 +300,9 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
           </div>
 
           {/* Action Decision Box */}
-          <div className="bg-sap-dark/90 p-5 rounded-xl border border-sap-border flex flex-col justify-between space-y-4 min-w-[280px]">
+          <div className="bg-slate-800 p-5 rounded-md border border-slate-700 flex flex-col justify-between space-y-4 min-w-[280px]">
             <div>
-              <span className="text-xs text-sap-muted uppercase tracking-wider block">Governance Status</span>
+              <span className="text-xs text-slate-400 uppercase tracking-wider block">Governance Status</span>
               <div className="mt-1 flex items-center space-x-2">
                 <span className={`h-3 w-3 rounded-full ${isApproved ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
                 <span className="text-sm font-bold text-white">
@@ -314,13 +314,13 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               </p>
             </div>
 
-            <div className="space-y-2 pt-2 border-t border-sap-border">
+            <div className="space-y-2 pt-2 border-t border-slate-700">
               <button
                 onClick={onOpenApproval}
-                className={`w-full py-2.5 px-4 rounded-lg font-semibold text-xs transition-all flex items-center justify-center space-x-2 ${
+                className={`w-full py-2.5 px-4 rounded-md font-semibold text-xs transition-all flex items-center justify-center space-x-2 ${
                   isApproved
                     ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 cursor-default'
-                    : 'bg-gradient-to-r from-sap-accent to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg shadow-blue-500/20'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
                 <CheckCircle2 className="w-4 h-4" />

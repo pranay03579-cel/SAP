@@ -13,45 +13,42 @@ export const Header: React.FC<HeaderProps> = ({ currentCase, onOpenApproval }) =
 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
 
         {/* Brand */}
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-sm flex-shrink-0">
-            <ShieldAlert className="w-4.5 h-4.5 text-white" style={{ width: 18, height: 18 }} />
+        <div className="flex items-center space-x-2.5">
+          <div className="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center flex-shrink-0">
+            <ShieldAlert className="w-4 h-4 text-white" />
           </div>
           <div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5">
               <span className="text-sm font-bold text-slate-900 tracking-tight">SAP Sentinel</span>
-              <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+              <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
                 Control Tower
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 leading-none mt-0.5">
+            <p className="text-[11px] text-slate-500 leading-none mt-0.5">
               Supply-Chain Resilience · Inclusive Workforce
             </p>
           </div>
         </div>
 
-        {/* Live disruption pulse (compact, center) */}
-        <div className="hidden md:flex items-center space-x-4 text-xs text-slate-500">
+        {/* Disruption status indicator (compact, center) */}
+        <div className="hidden md:flex items-center space-x-3 text-xs text-slate-600">
           <div className="flex items-center space-x-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-60" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
-            </span>
-            <span className="font-semibold text-red-600 uppercase tracking-wide text-[10px]">
+            <span className="w-2 h-2 rounded-full bg-red-600 flex-shrink-0" />
+            <span className="font-semibold text-red-700 text-[11px]">
               {disruption?.severity ?? 'CRITICAL'} DISRUPTION
             </span>
           </div>
           <span className="text-slate-300">|</span>
           <div className="flex items-center space-x-1">
-            <MapPin className="w-3 h-3 text-blue-500" />
+            <MapPin className="w-3.5 h-3.5 text-slate-400" />
             <span>{disruption?.location?.name ?? 'NH-27 Dima Hasao'}</span>
           </div>
           <span className="text-slate-300">|</span>
           <div className="flex items-center space-x-1">
-            <Clock className="w-3 h-3 text-amber-500" />
+            <Clock className="w-3.5 h-3.5 text-slate-400" />
             <span className="font-mono">{disruption?.estimatedBlockedDurationHours ?? 84}h blocked</span>
           </div>
         </div>
@@ -59,10 +56,10 @@ export const Header: React.FC<HeaderProps> = ({ currentCase, onOpenApproval }) =
         {/* Primary action */}
         <button
           onClick={onOpenApproval}
-          className={`flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-xl transition-all flex-shrink-0 ${
+          className={`flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors flex-shrink-0 ${
             isApproved
               ? 'bg-green-50 text-green-700 border border-green-300'
-              : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm shadow-blue-200'
+              : 'bg-blue-600 hover:bg-blue-700 text-white'
           }`}
         >
           <CheckCircle2 className="w-3.5 h-3.5" />

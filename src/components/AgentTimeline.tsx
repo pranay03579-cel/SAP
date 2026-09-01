@@ -186,7 +186,7 @@ export const AgentTimeline: React.FC<AgentTimelineProps> = ({
       />
 
       {/* 2. Interactive Pipeline Controls & Header */}
-      <div className="glass-panel p-5 rounded-2xl border border-sap-border space-y-4 shadow-xl">
+      <div className="bg-slate-900 p-5 rounded-md border border-slate-800 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
@@ -230,7 +230,7 @@ export const AgentTimeline: React.FC<AgentTimelineProps> = ({
               <button
                 onClick={onRetryPipeline}
                 disabled={isPipelineRunning}
-                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-xl text-xs font-bold shadow-lg shadow-amber-500/20 transition-all flex items-center space-x-1.5"
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-md text-xs font-bold transition-all flex items-center space-x-1.5"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isPipelineRunning ? 'animate-spin' : ''}`} />
                 <span>Retry Failed Step</span>
@@ -239,10 +239,10 @@ export const AgentTimeline: React.FC<AgentTimelineProps> = ({
               <button
                 onClick={onRunFullPipeline}
                 disabled={isPipelineRunning || allCompleted}
-                className={`px-4 py-2 rounded-xl text-xs font-bold shadow-lg transition-all flex items-center space-x-1.5 ${
+                className={`px-4 py-2 rounded-md text-xs font-bold transition-all flex items-center space-x-1.5 ${
                   allCompleted
-                    ? 'bg-slate-800 text-sap-muted border border-sap-border cursor-not-allowed'
-                    : 'bg-gradient-to-r from-sap-accent to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-blue-500/20'
+                    ? 'bg-slate-800 text-slate-400 border border-slate-700 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
                 <Play className={`w-3.5 h-3.5 ${isPipelineRunning ? 'animate-spin' : ''}`} />
@@ -318,14 +318,14 @@ export const AgentTimeline: React.FC<AgentTimelineProps> = ({
             <div
               key={agentName}
               id={cardId}
-              className={`glass-panel rounded-2xl border transition-all overflow-hidden ${
+              className={`bg-slate-900 rounded-md border transition-all overflow-hidden ${
                 status === 'FAILED'
                   ? 'border-red-500/60 bg-red-950/10'
                   : status === 'RUNNING'
-                  ? 'border-sap-accent shadow-xl shadow-blue-500/10'
+                  ? 'border-blue-500'
                   : status === 'COMPLETED'
-                  ? 'border-sap-border hover:border-slate-500'
-                  : 'border-sap-border/60 opacity-75'
+                  ? 'border-slate-800 hover:border-slate-700'
+                  : 'border-slate-800/60'
               }`}
             >
               {/* Card Header (Clickable to expand/collapse) */}

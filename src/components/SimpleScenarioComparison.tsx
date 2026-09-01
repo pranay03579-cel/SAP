@@ -1,16 +1,12 @@
 /**
- * SimpleScenarioComparison — Phase 12
+ * SimpleScenarioComparison (Hard Flat Business Operations Design)
  *
  * Minimal, light-mode "see other options" panel.
- * Shows all 3 recovery scenarios with key metrics and score.
- * Same design language as SimpleAgentTimeline.
- *
- * Data: currentCase.candidateScenarios + currentCase.decision.scenarioEvaluations
+ * Flat cards, rounded-md, clean table-like rows, zero gradients.
  */
 
 import React, { useState } from 'react';
 import {
-  Star,
   ChevronDown,
   ChevronUp,
   CheckCircle2,
@@ -68,22 +64,22 @@ export const SimpleScenarioComparison: React.FC<SimpleScenarioComparisonProps> =
 
   if (sorted.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center">
+      <div className="bg-white rounded-md border border-slate-200 p-6 text-center">
         <BarChart3 className="w-6 h-6 text-slate-300 mx-auto mb-2" />
-        <p className="text-sm text-slate-400">Run the AI pipeline first to generate recovery options.</p>
+        <p className="text-xs text-slate-400">Run the AI recovery analysis first to generate options.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
       {/* Header */}
-      <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <BarChart3 className="w-4 h-4 text-blue-600" />
           <h3 className="text-sm font-bold text-slate-900">Other recovery options</h3>
         </div>
-        <span className="text-xs text-slate-400">See how the other recovery options compare.</span>
+        <span className="text-xs text-slate-500">Compare recovery time, cost and workforce safety.</span>
       </div>
 
       {/* Scenario list */}
@@ -95,21 +91,18 @@ export const SimpleScenarioComparison: React.FC<SimpleScenarioComparisonProps> =
           const isOpen = expanded === scenario.scenarioId;
 
           return (
-            <div
-              key={scenario.scenarioId}
-              className={`border-l-4 ${isRecommended ? 'border-l-green-400' : 'border-l-slate-200'}`}
-            >
+            <div key={scenario.scenarioId}>
               {/* Row button */}
               <button
                 onClick={() => setExpanded(isOpen ? null : scenario.scenarioId)}
-                className="w-full px-5 py-4 flex items-start space-x-3 text-left hover:bg-slate-50 transition-colors"
+                className="w-full px-4 py-3 flex items-start space-x-3 text-left hover:bg-slate-50 transition-colors"
               >
                 {/* Rank badge */}
                 <span
-                  className={`flex-shrink-0 w-6 h-6 rounded-full text-[11px] font-bold flex items-center justify-center mt-0.5 ${
+                  className={`flex-shrink-0 w-5 h-5 rounded-full text-[11px] font-bold flex items-center justify-center mt-0.5 ${
                     isRecommended
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-slate-100 text-slate-500'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-100 text-slate-600'
                   }`}
                 >
                   {ev?.rank ?? '—'}
@@ -117,38 +110,34 @@ export const SimpleScenarioComparison: React.FC<SimpleScenarioComparisonProps> =
 
                 {/* Main content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center flex-wrap gap-2 mb-1">
+                  <div className="flex items-center flex-wrap gap-2 mb-0.5">
                     <span className="text-xs font-bold text-slate-900">{scenario.scenarioName}</span>
                     {isRecommended && (
-                      <span className="flex items-center space-x-1 text-[10px] font-semibold text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-md">
-                        <Star className="w-2.5 h-2.5" />
-                        <span>Recommended</span>
+                      <span className="text-[10px] font-semibold text-slate-700 bg-slate-100 border border-slate-300 px-1.5 py-0.5 rounded">
+                        Recommended
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 leading-snug">{scenario.summary}</p>
+                  <p className="text-xs text-slate-600 leading-snug">{scenario.summary}</p>
 
                   {/* Quick metric row */}
-                  <div className="flex flex-wrap gap-3 mt-2">
+                  <div className="flex flex-wrap gap-2 mt-1.5">
                     {mx && (
                       <>
-                        <MetricChip icon={<Clock className="w-3 h-3 text-blue-500" />} value={`${mx.recoveryTimeHours}h`} label="recovery" />
-                        <MetricChip icon={<DollarSign className="w-3 h-3 text-green-500" />} value={`₹${(mx.costInr / 100000).toFixed(1)}L`} label="cost" />
-                        <MetricChip icon={<Users className="w-3 h-3 text-violet-500" />} value={`${mx.workerWellBeingScore}/100`} label="well-being" />
+                        <MetricChip icon={<Clock className="w-3 h-3 text-slate-500" />} value={`${mx.recoveryTimeHours}h`} label="recovery" />
+                        <MetricChip icon={<DollarSign className="w-3 h-3 text-slate-500" />} value={`₹${(mx.costInr / 100000).toFixed(1)}L`} label="cost" />
+                        <MetricChip icon={<Users className="w-3 h-3 text-slate-500" />} value={`${mx.workerWellBeingScore}/100`} label="workforce" />
                       </>
                     )}
                     {ev && (
-                      <MetricChip
-                        icon={<span className="text-[10px] font-bold text-slate-500">⬡</span>}
-                        value={`${ev.compositeScore.toFixed(0)}/100`}
-                        label="score"
-                        highlight={isRecommended}
-                      />
+                      <span className="inline-flex items-center text-[10px] font-mono font-medium text-slate-600 bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded">
+                        Score: {ev.compositeScore.toFixed(0)}/100
+                      </span>
                     )}
                   </div>
                 </div>
 
-                {/* Toggle */}
+                {/* Expand toggle */}
                 <div className="flex-shrink-0 mt-1 text-slate-400">
                   {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </div>
@@ -156,80 +145,83 @@ export const SimpleScenarioComparison: React.FC<SimpleScenarioComparisonProps> =
 
               {/* Expanded detail */}
               {isOpen && (
-                <div className="px-14 pb-5 space-y-4">
-                  {/* Trade-off grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <DetailCell label="COST" value={`₹${(scenario.tradeOffs.incrementalCostInr / 100000).toFixed(1)}L`} />
-                    <DetailCell label="RECOVERY TIME" value={`${scenario.tradeOffs.estimatedRecoveryHours}h`} />
-                    <DetailCell label="WORKER WELL-BEING" value={`${scenario.tradeOffs.workerWellBeingScore}/100`} />
-                    <DetailCell label="SLA ADHERENCE" value={`${scenario.tradeOffs.slaAdherencePercentage}%`} />
-                  </div>
-
-                  {/* Workforce safety */}
-                  <div className="text-xs">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Workforce Safety</span>
-                    <div className="flex items-center space-x-3">
-                      <span
-                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                          scenario.workforceSafetyAssessment.burnoutRiskCategory === 'LOW'
-                            ? 'bg-green-50 text-green-700 border-green-200'
-                            : 'bg-amber-50 text-amber-700 border-amber-200'
-                        }`}
-                      >
-                        {scenario.workforceSafetyAssessment.burnoutRiskCategory} burnout risk
-                      </span>
-                      <span className={`text-xs font-medium ${scenario.workforceSafetyAssessment.allAccommodationsRespected ? 'text-green-700' : 'text-red-600'}`}>
-                        {scenario.workforceSafetyAssessment.allAccommodationsRespected ? '✓ All accommodations respected' : '✗ Accommodations breached'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Recovery actions */}
-                  {scenario.recoveryOptions.length > 0 && (
+                <div className="px-12 pb-3.5 bg-slate-50 border-t border-slate-100 space-y-3 pt-2.5">
+                  {/* Trade-off summary */}
+                  {ev && (
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Actions ({scenario.recoveryOptions.length})</span>
-                      <div className="space-y-1.5">
-                        {scenario.recoveryOptions.map((opt) => (
-                          <div key={opt.optionId} className="flex items-start space-x-2 text-xs text-slate-600">
-                            <ModalityIcon modality={opt.modality} />
-                            <div>
-                              <span className="font-semibold text-slate-800">{opt.name}</span>
-                              <span className="text-slate-400 ml-1">· {modalityLabel(opt.modality)}</span>
-                              <p className="text-slate-500 text-[11px] mt-0.5">{opt.description}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-0.5">
+                        Trade-off evaluation
+                      </span>
+                      <p className="text-xs text-slate-700 leading-relaxed">{ev.tradeOffSummary}</p>
                     </div>
                   )}
+
+                  {/* Action components */}
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                      Tactical Transport Actions ({scenario.recoveryOptions.length})
+                    </span>
+                    <div className="space-y-1.5">
+                      {scenario.recoveryOptions.map((opt) => (
+                        <div
+                          key={opt.optionId}
+                          className="flex items-start space-x-2 p-2 bg-white rounded border border-slate-200 text-xs"
+                        >
+                          <div className="text-slate-500 mt-0.5">
+                            <ModalityIcon modality={opt.modality} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="font-semibold text-slate-800">{opt.name}</span>
+                              <span className="text-[10px] font-mono text-slate-500">{modalityLabel(opt.modality)}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 mt-0.5">{opt.description}</p>
+                            <div className="flex items-center space-x-3 mt-1 text-[10px] text-slate-600">
+                              <span>Lead time: <strong className="text-slate-800">{opt.leadTimeHours}h</strong></span>
+                              <span>Cost: <strong className="text-slate-800">₹{(opt.estimatedCostInr / 100000).toFixed(2)}L</strong></span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
                   {/* Risks */}
                   {ev && ev.risks.length > 0 && (
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">Risks</span>
-                      <div className="space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-0.5">
+                        Identified Risks
+                      </span>
+                      <ul className="space-y-0.5">
                         {ev.risks.map((r, i) => (
-                          <div key={i} className="flex items-start space-x-1.5 text-xs text-amber-700">
-                            <AlertTriangle className="w-3 h-3 mt-0.5 shrink-0 text-amber-500" />
+                          <li key={i} className="flex items-start space-x-1.5 text-xs text-slate-600">
+                            <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
                             <span>{r}</span>
-                          </div>
+                          </li>
                         ))}
-                      </div>
+                      </ul>
                     </div>
                   )}
 
-                  {/* CTA */}
-                  <button
-                    onClick={() => onSelectScenarioForApproval(scenario.scenarioId)}
-                    className={`mt-1 flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                      isRecommended
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                        : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-400'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>{isRecommended ? 'Approve this plan' : 'Override & select this plan'}</span>
-                  </button>
+                  {/* Select for approval CTA */}
+                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
+                    <span className="text-[11px] text-slate-500">
+                      {isRecommended
+                        ? 'This is the AI-recommended option.'
+                        : 'You can override and approve this alternative plan.'}
+                    </span>
+                    <button
+                      onClick={() => onSelectScenarioForApproval(scenario.scenarioId)}
+                      className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors flex items-center space-x-1.5 ${
+                        isRecommended
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                          : 'bg-white hover:bg-slate-100 text-slate-800 border border-slate-200'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>{isRecommended ? 'Approve This Plan' : 'Select for Approval'}</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -238,33 +230,23 @@ export const SimpleScenarioComparison: React.FC<SimpleScenarioComparisonProps> =
       </div>
 
       {/* Footer */}
-      <div className="px-5 py-3 bg-slate-50 border-t border-slate-100">
+      <div className="px-4 py-2 bg-slate-50 border-t border-slate-100">
         <p className="text-[11px] text-slate-400 text-center">
-          Scores computed by weighted multi-criteria engine across {evaluations[0]?.criteria.length ?? 7} criteria — all from mock data.
+          All options evaluated across 7 weighted decision criteria.
         </p>
       </div>
     </div>
   );
 };
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-const MetricChip: React.FC<{
-  icon: React.ReactNode;
-  value: string;
-  label: string;
-  highlight?: boolean;
-}> = ({ icon, value, label, highlight }) => (
-  <div className={`flex items-center space-x-1 text-[11px] rounded-md px-2 py-0.5 border ${highlight ? 'bg-green-50 border-green-200 text-green-700' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+const MetricChip: React.FC<{ icon: React.ReactNode; value: string; label: string }> = ({
+  icon,
+  value,
+  label,
+}) => (
+  <span className="inline-flex items-center space-x-1 text-[11px] bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700">
     {icon}
-    <span className="font-bold">{value}</span>
-    <span className="text-slate-400">{label}</span>
-  </div>
-);
-
-const DetailCell: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div className="bg-slate-50 rounded-xl border border-slate-200 p-2.5">
-    <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">{label}</span>
-    <span className="text-sm font-bold text-slate-800 font-mono">{value}</span>
-  </div>
+    <strong className="font-mono font-semibold text-slate-900">{value}</strong>
+    <span className="text-slate-500">{label}</span>
+  </span>
 );

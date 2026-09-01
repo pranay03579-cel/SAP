@@ -172,18 +172,18 @@ export const RecoveryComparison: React.FC<RecoveryComparisonProps> = ({
             return (
               <div
                 key={scenario.scenarioId}
-                className={`glass-panel rounded-2xl flex flex-col transition-all relative overflow-hidden ${
+                className={`bg-slate-900 rounded-md flex flex-col transition-all relative overflow-hidden ${
                   isRecommended
-                    ? 'border-2 border-emerald-500/80 shadow-xl shadow-emerald-500/10 bg-gradient-to-b from-emerald-950/20 via-sap-card to-sap-card'
-                    : 'border border-sap-border hover:border-slate-500'
+                    ? 'border-2 border-emerald-500 bg-slate-900'
+                    : 'border border-slate-800 hover:border-slate-700'
                 }`}
               >
                 {/* Rank ribbon */}
                 {ev && (
                   <div className={`px-4 py-1.5 text-center text-xs font-bold flex items-center justify-center gap-2 uppercase tracking-wider ${
                     isRecommended
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950'
-                      : ev.rank === 2 ? 'bg-slate-700/80 text-slate-200' : 'bg-slate-800/80 text-slate-400'
+                      ? 'bg-emerald-600 text-white'
+                      : ev.rank === 2 ? 'bg-slate-700 text-slate-200' : 'bg-slate-800 text-slate-400'
                   }`}>
                     {isRecommended && <Sparkles className="w-3.5 h-3.5" />}
                     <span>
@@ -197,7 +197,7 @@ export const RecoveryComparison: React.FC<RecoveryComparisonProps> = ({
                   {/* Header */}
                   <div>
                     <div className="flex items-center justify-between text-xs mb-1">
-                      <span className="font-mono text-sap-muted">{scenario.scenarioId}</span>
+                      <span className="font-mono text-slate-400">{scenario.scenarioId}</span>
                     </div>
                     <h3 className="text-sm font-bold text-white leading-tight">{scenario.scenarioName}</h3>
                     <p className="text-xs text-slate-300 mt-1.5 leading-relaxed line-clamp-3">{scenario.summary}</p>
@@ -205,16 +205,16 @@ export const RecoveryComparison: React.FC<RecoveryComparisonProps> = ({
 
                   {/* Composite score bar */}
                   {ev && (
-                    <div className="bg-sap-dark/70 rounded-xl p-3 border border-sap-border/60">
+                    <div className="bg-slate-800 rounded-md p-3 border border-slate-700">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-bold text-sap-muted uppercase tracking-wider">Composite Score</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Composite Score</span>
                         <span className={`text-sm font-bold font-mono ${isRecommended ? 'text-emerald-400' : 'text-slate-200'}`}>
                           {ev.compositeScore.toFixed(1)} / 100
                         </span>
                       </div>
                       <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
                         <div
-                          className={`h-full rounded-full transition-all duration-700 ${isRecommended ? 'bg-gradient-to-r from-emerald-500 to-teal-400' : 'bg-blue-500/70'}`}
+                          className={`h-full rounded-full transition-all duration-700 ${isRecommended ? 'bg-emerald-500' : 'bg-blue-500'}`}
                           style={{ width: `${ev.compositeScore}%` }}
                         />
                       </div>

@@ -42,7 +42,6 @@ interface TraceStepConfig {
   icon: React.ReactNode;
   accentColor: string;
   borderColor: string;
-  bgGradient: string;
 }
 
 export const DecisionTrace: React.FC<DecisionTraceProps> = ({ currentCase, onSelectAgent }) => {
@@ -59,13 +58,12 @@ export const DecisionTrace: React.FC<DecisionTraceProps> = ({ currentCase, onSel
     {
       id: 'disruption',
       stepNumber: 1,
-      title: 'Disruption',
-      subtitle: disruption ? `${disruption.category} · ${disruption.severity}` : 'Pending Detection',
+      title: 'Disruption Detected',
+      subtitle: disruption ? `${disruption.estimatedBlockedDurationHours}h Blockage · Critical` : 'Pending Telemetry',
       agentName: 'Disruption Agent',
       icon: <AlertTriangle className="w-4 h-4 text-red-400" />,
       accentColor: 'text-red-400',
       borderColor: 'border-red-500/40',
-      bgGradient: 'from-red-950/30 to-slate-900/40',
     },
     {
       id: 'supplyChain',
@@ -73,10 +71,9 @@ export const DecisionTrace: React.FC<DecisionTraceProps> = ({ currentCase, onSel
       title: 'Supply Chain Impact',
       subtitle: supplyChain ? `₹${(supplyChain.estimatedTotalValueAtRiskInr / 10000000).toFixed(2)} Cr At Risk` : 'Pending Analysis',
       agentName: 'Supply Chain Impact Agent',
-      icon: <Package className="w-4 h-4 text-cyan-400" />,
-      accentColor: 'text-cyan-400',
-      borderColor: 'border-cyan-500/40',
-      bgGradient: 'from-cyan-950/30 to-slate-900/40',
+      icon: <Package className="w-4 h-4 text-blue-400" />,
+      accentColor: 'text-blue-400',
+      borderColor: 'border-blue-500/40',
     },
     {
       id: 'workforce',
@@ -87,7 +84,6 @@ export const DecisionTrace: React.FC<DecisionTraceProps> = ({ currentCase, onSel
       icon: <Users className="w-4 h-4 text-emerald-400" />,
       accentColor: 'text-emerald-400',
       borderColor: 'border-emerald-500/40',
-      bgGradient: 'from-emerald-950/30 to-slate-900/40',
     },
     {
       id: 'recovery',
@@ -98,7 +94,6 @@ export const DecisionTrace: React.FC<DecisionTraceProps> = ({ currentCase, onSel
       icon: <Route className="w-4 h-4 text-amber-400" />,
       accentColor: 'text-amber-400',
       borderColor: 'border-amber-500/40',
-      bgGradient: 'from-amber-950/30 to-slate-900/40',
     },
     {
       id: 'evaluation',
@@ -106,10 +101,9 @@ export const DecisionTrace: React.FC<DecisionTraceProps> = ({ currentCase, onSel
       title: 'Scenario Evaluation',
       subtitle: decision ? `${decision.scenarioEvaluations?.length ?? 3} Scenarios Multi-Scored` : 'Pending Scoring',
       agentName: 'Decision Agent (Scoring Engine)',
-      icon: <BarChart3 className="w-4 h-4 text-purple-400" />,
-      accentColor: 'text-purple-400',
-      borderColor: 'border-purple-500/40',
-      bgGradient: 'from-purple-950/30 to-slate-900/40',
+      icon: <BarChart3 className="w-4 h-4 text-blue-400" />,
+      accentColor: 'text-blue-400',
+      borderColor: 'border-blue-500/40',
     },
     {
       id: 'recommendation',
@@ -120,12 +114,11 @@ export const DecisionTrace: React.FC<DecisionTraceProps> = ({ currentCase, onSel
       icon: <Award className="w-4 h-4 text-emerald-400" />,
       accentColor: 'text-emerald-400',
       borderColor: 'border-emerald-500/60',
-      bgGradient: 'from-emerald-950/40 to-slate-900/60',
     },
   ];
 
   return (
-    <div className="glass-panel p-5 rounded-2xl border border-sap-border space-y-5 bg-gradient-to-b from-slate-900/90 to-sap-card shadow-xl">
+    <div className="bg-slate-900 p-5 rounded-md border border-slate-800 space-y-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-sap-border/60 pb-3">
         <div className="flex items-center space-x-2">
@@ -158,10 +151,10 @@ export const DecisionTrace: React.FC<DecisionTraceProps> = ({ currentCase, onSel
             <button
               key={step.id}
               onClick={() => setSelectedStep(step.id)}
-              className={`p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between group ${
+              className={`p-3 rounded-md border text-left transition-all relative flex flex-col justify-between group ${
                 isSelected
-                  ? `${step.borderColor} bg-gradient-to-b ${step.bgGradient} shadow-lg ring-1 ring-white/20 scale-[1.02]`
-                  : 'border-sap-border/70 bg-sap-dark/60 hover:border-slate-500 hover:bg-sap-dark/90'
+                  ? `${step.borderColor} bg-slate-800 ring-1 ring-white/20 scale-[1.02]`
+                  : 'border-slate-800 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900'
               }`}
             >
               <div>

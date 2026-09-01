@@ -30,16 +30,16 @@ export const FinalDecisionPanel: React.FC<FinalDecisionPanelProps> = ({
   if (!decision) return null;
 
   return (
-    <div className="glass-panel rounded-2xl p-6 border-2 border-sap-accent/40 bg-gradient-to-br from-blue-950/30 via-sap-card to-sap-card shadow-2xl space-y-6">
+    <div className="bg-slate-900 rounded-md p-6 border border-slate-800 space-y-6">
       {/* 1. Header Banner with Status */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-sap-border/60 pb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 text-xs font-bold bg-emerald-500/20 text-emerald-400 rounded-full border border-emerald-500/30 flex items-center space-x-1">
+            <span className="px-2.5 py-0.5 text-xs font-bold bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30 flex items-center space-x-1">
               <Sparkles className="w-3 h-3" />
               <span>OPTIMIZED DECISION RECOMMENDATION</span>
             </span>
-            <span className="text-xs font-mono text-sap-muted">{decision.decisionId}</span>
+            <span className="text-xs font-mono text-slate-400">{decision.decisionId}</span>
           </div>
           <h2 className="text-xl font-bold text-white">
             {decision.recommendedScenarioName}
@@ -50,21 +50,21 @@ export const FinalDecisionPanel: React.FC<FinalDecisionPanelProps> = ({
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={() => onNavigateTab('agents')}
-            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-medium border border-sap-border transition-colors flex items-center space-x-1.5"
+            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-md text-xs font-medium border border-slate-700 transition-colors flex items-center space-x-1.5"
           >
             <span>View Analysis</span>
           </button>
 
           <button
             onClick={() => onNavigateTab('scenarios')}
-            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-medium border border-sap-border transition-colors flex items-center space-x-1.5"
+            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-md text-xs font-medium border border-slate-700 transition-colors flex items-center space-x-1.5"
           >
             <span>Compare Scenarios</span>
           </button>
 
           <button
             onClick={onRejectApproval}
-            className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-colors flex items-center space-x-1.5 ${
+            className={`px-3.5 py-2 rounded-md text-xs font-medium border transition-colors flex items-center space-x-1.5 ${
               isRejected
                 ? 'bg-red-600/30 text-red-300 border-red-500'
                 : 'bg-red-950/40 hover:bg-red-900/60 text-red-300 border-red-500/40'
@@ -76,10 +76,10 @@ export const FinalDecisionPanel: React.FC<FinalDecisionPanelProps> = ({
 
           <button
             onClick={onOpenApproval}
-            className={`px-5 py-2 rounded-xl text-xs font-bold shadow-lg transition-all flex items-center space-x-1.5 ${
+            className={`px-5 py-2 rounded-md text-xs font-bold transition-all flex items-center space-x-1.5 ${
               isApproved
                 ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/50'
-                : 'bg-gradient-to-r from-sap-accent to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-blue-500/25'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
             <CheckCircle2 className="w-4 h-4" />

@@ -1,17 +1,8 @@
 /**
- * SAP Sentinel — ControlTower (Phase 12 Hackathon Demo)
+ * SAP Sentinel — ControlTower (Hard Flat Business Operations Layout)
  *
- * Minimal, light-mode, judge-friendly layout.
- *
- * Visual hierarchy:
- *   1. Disruption alert (what happened)
- *   2. Impact summary (what is affected)
- *   3. Recommendation hero (what to do — visually dominant)
- *   4. Action buttons (approve + secondary links)
- *
- * All values are derived from the Case domain model.
- * No hardcoded display strings.
- * No chain-of-thought exposed.
+ * Flat, crisp, solid-color enterprise dashboard.
+ * Zero gradients, zero decorative shadows, zero glowing accents.
  */
 
 import React from 'react';
@@ -74,28 +65,27 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
   // ── PRE-ANALYSIS: show CTA ──────────────────────────────────────────────
   if (!isPipelineComplete && !isPipelineRunning) {
     return (
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="max-w-2xl mx-auto space-y-3">
         <DisruptionCard currentCase={currentCase} />
 
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center space-y-5">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100">
-            <Zap className="w-7 h-7 text-blue-600" />
+        <div className="bg-white rounded-md border border-slate-200 p-6 text-center space-y-3">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-blue-50 border border-blue-200 text-blue-600">
+            <Zap className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Ready to analyse</h2>
-            <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
-              5 AI agents will assess the disruption, check affected shipments, evaluate the
-              workforce, and recommend the best recovery plan.
+            <h2 className="text-base font-bold text-slate-900">Ready to analyse disruption</h2>
+            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+              5 specialized agents will evaluate route conditions, calculate shipment risk, check workforce capacity, and propose recovery scenarios.
             </p>
           </div>
           <button
             onClick={onRunFullPipeline}
-            className="inline-flex items-center space-x-2 px-7 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all"
+            className="inline-flex items-center space-x-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition-colors"
           >
             <span>Run AI Recovery Analysis</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-          <p className="text-[11px] text-slate-400 font-mono">MOCK MODE — no SAP connection required</p>
+          <p className="text-[11px] text-slate-400 font-mono">MOCK MODE — local simulation</p>
         </div>
       </div>
     );
@@ -104,21 +94,21 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
   // ── ANALYSING ───────────────────────────────────────────────────────────
   if (isPipelineRunning) {
     return (
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="max-w-2xl mx-auto space-y-3">
         <DisruptionCard currentCase={currentCase} />
-        <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center space-y-4">
-          <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto" />
+        <div className="bg-white rounded-md border border-slate-200 p-6 text-center space-y-3">
+          <Loader2 className="w-6 h-6 text-blue-600 animate-spin mx-auto" />
           <div>
-            <h2 className="text-base font-bold text-slate-900">Agents analysing…</h2>
-            <p className="text-sm text-slate-500 mt-1">
-              The 5-agent pipeline is running. Results will appear when complete.
+            <h2 className="text-sm font-bold text-slate-900">Multi-Agent Pipeline Running…</h2>
+            <p className="text-xs text-slate-500 mt-1">
+              Evaluating routes, purchase orders, and workforce profiles.
             </p>
           </div>
-          <div className="flex justify-center flex-wrap gap-2">
+          <div className="flex justify-center flex-wrap gap-1.5 pt-1">
             {['Disruption', 'Supply Chain', 'Workforce', 'Recovery', 'Decision'].map((name) => (
               <span
                 key={name}
-                className="px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-lg text-[11px] text-slate-500 font-mono"
+                className="px-2 py-0.5 bg-slate-50 border border-slate-200 rounded text-[11px] text-slate-600 font-mono"
               >
                 {name}
               </span>
@@ -136,69 +126,68 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
 
   // ── COMPLETE: main demo layout ──────────────────────────────────────────
   return (
-    <div className="max-w-2xl mx-auto space-y-4">
+    <div className="max-w-2xl mx-auto space-y-3">
 
       {/* 1. DISRUPTION */}
       <DisruptionCard currentCase={currentCase} />
 
       {/* 2. IMPACT — compact row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <ImpactCell
-          icon={<Package className="w-3.5 h-3.5 text-blue-500" />}
+          icon={<Package className="w-3.5 h-3.5 text-slate-500" />}
           label="Shipments affected"
           value={`${scImpact?.impactedPOs?.length ?? '—'}`}
           sub="Purchase orders"
-          color="blue"
         />
         <ImpactCell
-          icon={<AlertTriangle className="w-3.5 h-3.5 text-red-500" />}
+          icon={<AlertTriangle className="w-3.5 h-3.5 text-red-600" />}
           label="Critical shipments"
           value={`${lifeSavingCount}`}
           sub="Life-saving cargo"
-          color="red"
+          highlight="danger"
         />
         <ImpactCell
-          icon={<Clock className="w-3.5 h-3.5 text-amber-500" />}
+          icon={<Clock className="w-3.5 h-3.5 text-amber-600" />}
           label="Stockout window"
           value={`${scImpact?.temperatureIntegrityThreat?.batteryBackupHoursRemaining ?? '—'}h`}
           sub="Cold-chain battery"
-          color="amber"
+          highlight="warning"
         />
         <ImpactCell
-          icon={<Users className="w-3.5 h-3.5 text-green-500" />}
+          icon={<Users className="w-3.5 h-3.5 text-green-600" />}
           label="Workers available"
           value={`${workforce?.availableStaffCount ?? '—'} / ${(workforce?.availableStaffCount ?? 0) + (workforce?.constrainedStaffCount ?? 0)}`}
-          sub="Qualified for task"
-          color="green"
+          sub="Qualified staff"
+          highlight="success"
         />
       </div>
 
       {/* 3. RECOMMENDATION — hero card */}
       {decision ? (
         <div
-          className={`bg-white rounded-2xl border-2 shadow-sm overflow-hidden ${
+          className={`bg-white rounded-md border overflow-hidden ${
             isApproved
-              ? 'border-green-400'
+              ? 'border-green-300'
               : isRejected
               ? 'border-red-300'
-              : 'border-blue-400'
+              : 'border-slate-300'
           }`}
         >
           {/* Header stripe */}
           <div
-            className={`px-5 py-2.5 flex items-center justify-between ${
+            className={`px-4 py-2 flex items-center justify-between border-b ${
               isApproved
-                ? 'bg-green-50 border-b border-green-200'
+                ? 'bg-green-50 border-green-200'
                 : isRejected
-                ? 'bg-red-50 border-b border-red-200'
-                : 'bg-blue-50 border-b border-blue-200'
+                ? 'bg-red-50 border-red-200'
+                : 'bg-slate-50 border-slate-200'
             }`}
           >
-            <div className="flex items-center space-x-2">
-              <Star className={`w-4 h-4 ${isApproved ? 'text-green-600' : 'text-blue-600'}`} />
+            <div className="flex items-center space-x-1.5">
+              <Star className={`w-3.5 h-3.5 ${isApproved ? 'text-green-700' : 'text-blue-600'}`} />
               <span
                 className={`text-xs font-bold uppercase tracking-wider ${
-                  isApproved ? 'text-green-700' : isRejected ? 'text-red-700' : 'text-blue-700'
+                  isApproved ? 'text-green-800' : isRejected ? 'text-red-800' : 'text-slate-800'
                 }`}
               >
                 {isApproved
@@ -209,18 +198,16 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
               </span>
             </div>
             <div className="flex items-center space-x-2 text-xs">
-              <span
-                className={`font-mono font-bold ${
-                  isApproved ? 'text-green-700' : 'text-blue-700'
-                }`}
-              >
+              <span className="font-mono font-semibold text-slate-700">
                 Score: {winnerEval?.compositeScore.toFixed(0) ?? '—'} / 100
               </span>
               <span
-                className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${
                   isApproved
-                    ? 'bg-green-100 text-green-700 border-green-300'
-                    : 'bg-blue-100 text-blue-700 border-blue-200'
+                    ? 'bg-green-100 text-green-800 border-green-300'
+                    : isRejected
+                    ? 'bg-red-100 text-red-800 border-red-300'
+                    : 'bg-blue-50 text-blue-700 border-blue-200'
                 }`}
               >
                 {isApproved ? 'APPROVED' : isRejected ? 'REJECTED' : 'RANK #1'}
@@ -229,84 +216,84 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
           </div>
 
           {/* Main content */}
-          <div className="p-5 space-y-4">
+          <div className="p-4 space-y-3">
             <div>
-              <h2 className="text-xl font-bold text-slate-900 leading-tight">
+              <h2 className="text-base font-bold text-slate-900 leading-snug">
                 {decision.recommendedScenarioName}
               </h2>
-              <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                 {displayReason}
               </p>
             </div>
 
             {/* Key metrics — exactly 3 outcomes */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <MetricPill
-                icon={<Clock className="w-3.5 h-3.5 text-blue-500" />}
+                icon={<Clock className="w-3.5 h-3.5 text-slate-500" />}
                 label="Recovery time"
                 value={`${winnerMatrix?.recoveryTimeHours ?? '—'} hours`}
               />
               <MetricPill
-                icon={<DollarSign className="w-3.5 h-3.5 text-green-500" />}
+                icon={<DollarSign className="w-3.5 h-3.5 text-slate-500" />}
                 label="Cost"
                 value={winnerMatrix ? `₹${(winnerMatrix.costInr / 100000).toFixed(1)} L` : '—'}
               />
               <MetricPill
-                icon={<ShieldCheck className="w-3.5 h-3.5 text-red-500" />}
+                icon={<ShieldCheck className="w-3.5 h-3.5 text-green-600" />}
                 label="Critical shipments"
                 value={`${lifeSavingCount} / ${lifeSavingCount} protected`}
               />
             </div>
 
             {/* Primary Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 pt-1">
+            <div className="flex flex-col sm:flex-row gap-2 pt-0.5">
               <button
                 onClick={onOpenApproval}
                 disabled={isApproved}
-                className={`flex-1 flex items-center justify-center space-x-2 py-3 px-5 rounded-xl text-sm font-bold transition-all ${
+                className={`flex-1 flex items-center justify-center space-x-1.5 py-2 px-3.5 rounded-md text-xs font-semibold transition-colors ${
                   isApproved
-                    ? 'bg-green-100 text-green-700 border border-green-300 cursor-default'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+                    ? 'bg-green-100 text-green-800 border border-green-300 cursor-default'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>{isApproved ? 'Plan Approved (Simulated Dispatch)' : 'Approve Recovery'}</span>
               </button>
 
               {!isApproved && !isRejected && (
                 <button
                   onClick={onRejectApproval}
-                  className="flex items-center justify-center space-x-1.5 py-3 px-4 rounded-xl text-sm font-medium bg-white hover:bg-red-50 text-red-500 border border-red-200 transition-colors"
+                  className="flex items-center justify-center space-x-1.5 py-2 px-3.5 rounded-md text-xs font-medium bg-white hover:bg-red-50 text-red-700 border border-red-200 transition-colors"
                 >
-                  <XCircle className="w-4 h-4" />
+                  <XCircle className="w-3.5 h-3.5" />
                   <span>Reject</span>
                 </button>
               )}
             </div>
 
             {/* Secondary Action Hierarchy */}
-            <div className="pt-2 border-t border-slate-100 space-y-2.5">
+            <div className="pt-2.5 border-t border-slate-100 space-y-2">
               {/* Primary Secondary Action */}
               <button
                 onClick={() => onOpenPanel(activePanel === 'analysis' ? null : 'analysis')}
-                className={`w-full py-2.5 px-4 rounded-xl text-xs font-semibold flex items-center justify-between border transition-all ${
+                className={`w-full py-1.5 px-3 rounded-md text-xs font-semibold flex items-center justify-between border transition-colors ${
                   activePanel === 'analysis'
                     ? 'bg-blue-50 border-blue-300 text-blue-700'
-                    : 'bg-white border-blue-200 text-blue-700 hover:bg-blue-50/50 hover:border-blue-300 shadow-sm'
+                    : 'bg-white border-slate-200 text-blue-700 hover:bg-slate-50'
                 }`}
               >
                 <div className="flex items-center space-x-2">
-                  <span className="font-bold text-sm">Why did AI choose this?</span>
+                  <span>Why did AI choose this?</span>
                   <span className="text-[11px] font-normal text-slate-500 hidden sm:inline">— 5 agents verified supplies, routes & workers</span>
                 </div>
-                <div className="flex items-center space-x-1 text-blue-600 font-semibold text-xs">
+                <div className="flex items-center space-x-1 text-blue-600 text-xs font-medium">
                   <span>{activePanel === 'analysis' ? 'Hide explanation' : 'See explanation'}</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </div>
               </button>
 
               {/* Tertiary Actions */}
-              <div className="flex items-center justify-center space-x-4 pt-0.5 text-xs text-slate-500">
+              <div className="flex items-center justify-center space-x-3 text-xs text-slate-500">
                 <button
                   onClick={() => onOpenPanel(activePanel === 'alternatives' ? null : 'alternatives')}
                   className={`hover:text-slate-900 transition-colors ${
@@ -347,14 +334,14 @@ export const ControlTower: React.FC<ControlTowerProps> = ({
 const DisruptionCard: React.FC<{ currentCase: Case }> = ({ currentCase }) => {
   const d = currentCase.disruption;
   return (
-    <div className="bg-white rounded-2xl border-l-4 border-l-red-500 border border-slate-200 p-4">
+    <div className="bg-white rounded-md border border-slate-200 border-l-4 border-l-red-600 p-3.5">
       <div className="flex items-start space-x-3">
-        <div className="p-2 bg-red-50 rounded-xl border border-red-100 flex-shrink-0">
-          <AlertTriangle className="w-4 h-4 text-red-500" />
+        <div className="p-1.5 bg-red-50 rounded border border-red-200 text-red-600 flex-shrink-0">
+          <AlertTriangle className="w-4 h-4" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center flex-wrap gap-2 mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-50 border border-red-200 rounded-md px-2 py-0.5">
+          <div className="flex items-center flex-wrap gap-2 mb-0.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-red-700 bg-red-50 border border-red-200 rounded px-1 py-0.5">
               {d?.severity ?? 'CRITICAL'} Disruption
             </span>
             <span className="text-[10px] font-mono text-slate-400">{currentCase.caseNumber}</span>
@@ -362,7 +349,7 @@ const DisruptionCard: React.FC<{ currentCase: Case }> = ({ currentCase }) => {
           <p className="text-sm font-bold text-slate-900 leading-snug">
             {d?.headline ?? 'Critical route disruption detected.'}
           </p>
-          <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+          <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
             {d
               ? `${d.location.name}, ${d.location.region} · ${d.estimatedBlockedDurationHours}h estimated blockade · ${d.weatherDetails.rainfallMmLast24Hours}mm rainfall in 24h`
               : 'Route disruption details loading.'}
@@ -378,28 +365,23 @@ const ImpactCell: React.FC<{
   label: string;
   value: string;
   sub: string;
-  color: 'blue' | 'red' | 'amber' | 'green';
-}> = ({ icon, label, value, sub, color }) => {
-  const bg = {
-    blue: 'bg-blue-50 border-blue-200',
-    red: 'bg-red-50 border-red-200',
-    amber: 'bg-amber-50 border-amber-200',
-    green: 'bg-green-50 border-green-200',
-  }[color];
-  const val = {
-    blue: 'text-blue-800',
-    red: 'text-red-800',
-    amber: 'text-amber-800',
-    green: 'text-green-800',
-  }[color];
+  highlight?: 'danger' | 'warning' | 'success';
+}> = ({ icon, label, value, sub, highlight }) => {
+  const valColor = highlight === 'danger'
+    ? 'text-red-700'
+    : highlight === 'warning'
+    ? 'text-amber-700'
+    : highlight === 'success'
+    ? 'text-green-700'
+    : 'text-slate-900';
 
   return (
-    <div className={`rounded-xl border p-3 ${bg}`}>
-      <div className="flex items-center space-x-1.5 mb-1">
+    <div className="bg-white rounded-md border border-slate-200 p-2.5">
+      <div className="flex items-center space-x-1 mb-0.5">
         {icon}
         <span className="text-[10px] text-slate-500 font-medium">{label}</span>
       </div>
-      <p className={`text-lg font-bold font-mono ${val}`}>{value}</p>
+      <p className={`text-base font-bold font-mono ${valColor}`}>{value}</p>
       <p className="text-[10px] text-slate-400 mt-0.5">{sub}</p>
     </div>
   );
@@ -410,11 +392,11 @@ const MetricPill: React.FC<{
   label: string;
   value: string;
 }> = ({ icon, label, value }) => (
-  <div className="bg-slate-50 rounded-xl border border-slate-200 p-3">
-    <div className="flex items-center space-x-1.5 mb-1">
+  <div className="bg-slate-50 rounded border border-slate-200 p-2">
+    <div className="flex items-center space-x-1 mb-0.5">
       {icon}
-      <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wide">{label}</span>
+      <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">{label}</span>
     </div>
-    <p className="text-sm font-bold text-slate-800">{value}</p>
+    <p className="text-xs font-bold text-slate-900">{value}</p>
   </div>
 );

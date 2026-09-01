@@ -203,7 +203,7 @@ export const WorkforceRosterView: React.FC<WorkforceRosterViewProps> = ({ curren
   return (
     <div className="space-y-6">
       {/* 1. Header Banner */}
-      <div className="glass-panel p-5 rounded-2xl border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-950/20 via-sap-card to-sap-card flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+      <div className="bg-slate-900 p-5 rounded-md border-l-4 border-l-emerald-500 border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
             <span className="px-2.5 py-0.5 text-xs font-bold bg-emerald-500/20 text-emerald-400 rounded-full border border-emerald-500/30 flex items-center gap-1">

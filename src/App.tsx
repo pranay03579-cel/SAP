@@ -5,7 +5,6 @@ import { pipelineOrchestrator } from './services/orchestrator';
 
 // ── Core layout ──────────────────────────────────────────────────────────────
 import { Header } from './components/Header';
-import { IntegrationModeBanner } from './components/IntegrationModeBanner';
 
 // ── Primary view ─────────────────────────────────────────────────────────────
 import { ControlTower } from './components/ControlTower';
@@ -24,8 +23,6 @@ import { AgentDetailPanel } from './components/AgentDetailPanel';
 type ActivePanel = 'analysis' | 'alternatives' | 'workforce' | 'audit' | null;
 
 export default function App() {
-  const integrationMode = pipelineOrchestrator.getIntegrationMode();
-
   // ── Case & pipeline state ──────────────────────────────────────────────────
   const [currentCase, setCurrentCase] = useState<Case>(MOCK_DISRUPTION_CASE);
   const [activePanel, setActivePanel] = useState<ActivePanel>(null);
@@ -135,19 +132,16 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
 
-      {/* Integration Mode Banner — always visible */}
-      <IntegrationModeBanner info={integrationMode} />
-
-      {/* Simplified Header */}
+      {/* Simplified Header — Very top of page */}
       <Header currentCase={currentCase} onOpenApproval={() => setIsApprovalOpen(true)} />
 
       {/* Main Content */}
-      <main className="flex-1 w-full px-4 sm:px-6 py-6 space-y-4">
+      <main className="flex-1 w-full px-4 sm:px-6 py-4 space-y-3">
 
         {/* Toast Notification */}
         {pipelineToast && (
           <div
-            className={`max-w-5xl mx-auto p-3.5 rounded-xl text-xs font-medium flex items-center justify-between shadow-sm border ${
+            className={`max-w-2xl mx-auto p-2.5 rounded-md text-xs font-medium flex items-center justify-between border ${
               pipelineToast.type === 'error'
                 ? 'bg-red-50 border-red-200 text-red-700'
                 : pipelineToast.type === 'success'
@@ -167,26 +161,26 @@ export default function App() {
 
         {/* Approval / Rejection Status Banner */}
         {currentCase.status === 'APPROVED' && (
-          <div className="max-w-5xl mx-auto p-3.5 rounded-xl bg-green-50 border border-green-200 flex items-center justify-between text-xs text-green-700">
+          <div className="max-w-2xl mx-auto p-2.5 rounded-md bg-green-50 border border-green-200 flex items-center justify-between text-xs text-green-800">
             <div className="flex items-center space-x-2">
-              <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-green-600 flex-shrink-0" />
               <span className="font-bold uppercase tracking-wider">Recovery Plan Approved</span>
-              <span className="text-green-600">— Simulated dispatch confirmed (MOCK MODE)</span>
+              <span className="text-green-700">— Simulated dispatch confirmed (MOCK MODE)</span>
             </div>
-            <span className="font-mono text-green-600 font-semibold text-[10px]">SIMULATED_DISPATCH_CONFIRMED</span>
+            <span className="font-mono text-green-700 font-semibold text-[10px]">SIMULATED_DISPATCH_CONFIRMED</span>
           </div>
         )}
 
         {currentCase.status === 'REJECTED' && (
-          <div className="max-w-5xl mx-auto p-3.5 rounded-xl bg-red-50 border border-red-200 flex items-center justify-between text-xs text-red-700">
+          <div className="max-w-2xl mx-auto p-2.5 rounded-md bg-red-50 border border-red-200 flex items-center justify-between text-xs text-red-800">
             <div className="flex items-center space-x-2">
-              <span className="h-2 w-2 rounded-full bg-red-500" />
+              <span className="h-2 w-2 rounded-full bg-red-600 flex-shrink-0" />
               <span className="font-bold uppercase tracking-wider">Recovery Plan Rejected</span>
-              <span>— Awaiting revised operator decision.</span>
+              <span>— Awaiting operator review.</span>
             </div>
             <button
               onClick={() => setIsApprovalOpen(true)}
-              className="px-3 py-1 bg-red-100 hover:bg-red-200 rounded-lg border border-red-300 font-semibold text-[11px] transition-colors"
+              className="px-2.5 py-1 bg-white hover:bg-red-50 rounded border border-red-300 font-semibold text-[11px] text-red-700 transition-colors"
             >
               Re-open Review
             </button>
@@ -209,7 +203,7 @@ export default function App() {
 
         {/* Panel: How AI Decided — Simple Agent Timeline (primary) */}
         {activePanel === 'analysis' && (
-          <div className="max-w-2xl mx-auto space-y-2">
+          <div className="max-w-2xl mx-auto space-y-1.5">
             <BackButton onClick={() => setActivePanel(null)} />
             <SimpleAgentTimeline currentCase={currentCase} />
           </div>
@@ -217,7 +211,7 @@ export default function App() {
 
         {/* Panel: See Other Options — Scenario Comparison */}
         {activePanel === 'alternatives' && (
-          <div className="max-w-2xl mx-auto space-y-2">
+          <div className="max-w-2xl mx-auto space-y-1.5">
             <BackButton onClick={() => setActivePanel(null)} />
             <SimpleScenarioComparison
               currentCase={currentCase}
@@ -228,7 +222,7 @@ export default function App() {
 
         {/* Panel: Workforce Details */}
         {activePanel === 'workforce' && (
-          <div className="max-w-2xl mx-auto space-y-2">
+          <div className="max-w-2xl mx-auto space-y-1.5">
             <BackButton onClick={() => setActivePanel(null)} />
             <SimpleWorkforceView currentCase={currentCase} />
           </div>
@@ -236,7 +230,7 @@ export default function App() {
 
         {/* Panel: Decision history (Audit Trail) */}
         {activePanel === 'audit' && (
-          <div className="max-w-2xl mx-auto space-y-2">
+          <div className="max-w-2xl mx-auto space-y-1.5">
             <BackButton onClick={() => setActivePanel(null)} />
             <SimpleAuditView
               currentCase={currentCase}
@@ -275,7 +269,7 @@ export default function App() {
 const BackButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
   <button
     onClick={onClick}
-    className="inline-flex items-center space-x-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors py-1 px-1 mb-1"
+    className="inline-flex items-center space-x-1 text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors py-0.5 px-0.5"
   >
     <span>← Back to Control Tower</span>
   </button>

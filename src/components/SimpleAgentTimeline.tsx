@@ -1,11 +1,8 @@
 /**
- * SimpleAgentTimeline — Phase 13 Final Polish
+ * SimpleAgentTimeline (Hard Flat Business Operations Design)
  *
- * A plain-language, hackathon-friendly view of what the 5 agents did.
- * Each agent shows ONE simple sentence explaining its finding, plus an expandable
- * detail section with structured evidence.
- *
- * Governance: No chain-of-thought, private prompts, or internal deliberation exposed.
+ * Plain-language, transparent summary from each of the 5 recovery agents.
+ * Flat cards, rounded-md, no decorative border stripes.
  */
 
 import React, { useState } from 'react';
@@ -27,7 +24,6 @@ interface SimpleAgentTimelineProps {
 }
 
 // ─── Plain-language sentence derivation ─────────────────────────────────────
-// Uses simple, concise business English derived from real case data.
 
 function getDisruptionSentence(currentCase: Case): string {
   const d = currentCase.disruption;
@@ -144,47 +140,42 @@ function AgentDetail({ execution }: { execution: AgentExecution | undefined }) {
 }
 
 const DetailGrid: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="mt-3 space-y-2.5 pt-3 border-t border-slate-100">{children}</div>
+  <div className="mt-2.5 space-y-2 pt-2.5 border-t border-slate-100">{children}</div>
 );
 
 const DetailRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
   <div>
-    <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</span>
-    <p className="text-xs text-slate-700 leading-relaxed mt-0.5">{value}</p>
+    <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
+    <p className="text-xs text-slate-800 leading-relaxed mt-0.5">{value}</p>
   </div>
 );
 
-// ─── Individual Agent Card ────────────────────────────────────────────────────
+// ─── Individual Agent Config ──────────────────────────────────────────────────
 
 const AGENT_CONFIG = [
   {
     key: 'Disruption Agent' as const,
-    icon: <AlertTriangle className="w-4 h-4 text-red-500" />,
-    color: 'border-l-red-400',
+    icon: <AlertTriangle className="w-3.5 h-3.5 text-slate-500" />,
     label: 'Disruption Agent',
   },
   {
     key: 'Supply Chain Impact Agent' as const,
-    icon: <Package className="w-4 h-4 text-blue-500" />,
-    color: 'border-l-blue-400',
+    icon: <Package className="w-3.5 h-3.5 text-slate-500" />,
     label: 'Supply Chain Agent',
   },
   {
     key: 'Workforce Agent' as const,
-    icon: <Users className="w-4 h-4 text-violet-500" />,
-    color: 'border-l-violet-400',
+    icon: <Users className="w-3.5 h-3.5 text-slate-500" />,
     label: 'Workforce Agent',
   },
   {
     key: 'Recovery Adaptation Agent' as const,
-    icon: <Truck className="w-4 h-4 text-amber-500" />,
-    color: 'border-l-amber-400',
+    icon: <Truck className="w-3.5 h-3.5 text-slate-500" />,
     label: 'Recovery Agent',
   },
   {
     key: 'Decision Agent' as const,
-    icon: <Trophy className="w-4 h-4 text-green-500" />,
-    color: 'border-l-green-400',
+    icon: <Trophy className="w-3.5 h-3.5 text-slate-500" />,
     label: 'Decision Agent',
   },
 ];
@@ -215,16 +206,18 @@ export const SimpleAgentTimeline: React.FC<SimpleAgentTimelineProps> = ({
   const ledger = currentCase.agentHistory.historyLedger;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+    <div className="bg-white rounded-md border border-slate-200 overflow-hidden">
       {/* Header */}
-      <div className="px-5 py-4 border-b border-slate-100">
-        <div className="flex items-center space-x-2">
-          <Layers className="w-4 h-4 text-blue-600" />
-          <h3 className="text-sm font-bold text-slate-900">Why did AI choose this?</h3>
+      <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+        <div>
+          <div className="flex items-center space-x-2">
+            <Layers className="w-4 h-4 text-blue-600" />
+            <h3 className="text-sm font-bold text-slate-900">Why did AI choose this?</h3>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Five agents verified the disruption, supplies, workforce and recovery routes.
+          </p>
         </div>
-        <p className="text-xs text-slate-500 mt-0.5">
-          Five agents checked the disruption, supplies, workers and recovery options.
-        </p>
       </div>
 
       {/* Agent list */}
@@ -236,28 +229,28 @@ export const SimpleAgentTimeline: React.FC<SimpleAgentTimelineProps> = ({
           const sentence = isCompleted ? getAgentSentence(agent.key, currentCase) : null;
 
           return (
-            <div key={agent.key} className={`border-l-4 ${agent.color} transition-colors`}>
+            <div key={agent.key}>
               <button
                 onClick={() => {
                   if (!isCompleted) return;
                   setExpanded(isOpen ? null : agent.key);
                 }}
                 disabled={!isCompleted}
-                className="w-full px-5 py-3.5 flex items-start space-x-3 text-left hover:bg-slate-50 transition-colors"
+                className="w-full px-4 py-3 flex items-start space-x-3 text-left hover:bg-slate-50 transition-colors"
               >
                 {/* Step number */}
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-[11px] font-bold flex items-center justify-center mt-0.5">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold flex items-center justify-center mt-0.5">
                   {index + 1}
                 </span>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2 mb-1">
+                  <div className="flex items-center space-x-2 mb-0.5">
                     {agent.icon}
                     <span className="text-xs font-bold text-slate-800">{agent.label}</span>
                     {isCompleted ? (
-                      <span className="flex items-center space-x-1 text-[10px] font-semibold text-green-600">
-                        <CheckCircle2 className="w-3 h-3" />
+                      <span className="flex items-center space-x-1 text-[10px] font-medium text-green-700">
+                        <CheckCircle2 className="w-3 h-3 text-green-600" />
                         <span>Completed</span>
                       </span>
                     ) : (
@@ -279,7 +272,7 @@ export const SimpleAgentTimeline: React.FC<SimpleAgentTimelineProps> = ({
 
               {/* Expanded detail */}
               {isOpen && execution && (
-                <div className="px-14 pb-4">
+                <div className="px-12 pb-3.5 bg-slate-50/50 border-t border-slate-100">
                   <AgentDetail execution={execution} />
                 </div>
               )}
@@ -289,9 +282,9 @@ export const SimpleAgentTimeline: React.FC<SimpleAgentTimelineProps> = ({
       </div>
 
       {/* Footer note */}
-      <div className="px-5 py-3 bg-slate-50 border-t border-slate-100">
+      <div className="px-4 py-2 bg-slate-50 border-t border-slate-100">
         <p className="text-[11px] text-slate-400 text-center">
-          All findings are generated deterministically by the 5-agent pipeline in mock mode.
+          All agent findings are generated deterministically in mock mode.
         </p>
       </div>
     </div>

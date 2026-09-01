@@ -1,88 +1,57 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Light page tokens (used by new Phase 12 components) ──────── */
-  --color-bg:           #F8F9FB;
-  --color-surface:      #FFFFFF;
-  --color-border:       #E2E8F0;
-  --color-border-strong:#CBD5E1;
+  /* ── Business Operations Light UI Tokens ───────────────────────── */
+  --color-bg:           #F8FAFC;   /* slate-50 neutral light background */
+  --color-surface:      #FFFFFF;   /* pure white card surface */
+  --color-border:       #E2E8F0;   /* slate-200 subtle flat border */
+  --color-border-strong:#CBD5E1;   /* slate-300 structural border */
 
-  --color-text-primary: #0F172A;
-  --color-text-secondary:#475569;
-  --color-text-muted:   #94A3B8;
+  --color-text-primary: #0F172A;   /* slate-900 high contrast */
+  --color-text-secondary:#475569;  /* slate-600 readable secondary */
+  --color-text-muted:   #64748B;   /* slate-500 muted text */
 
-  --color-accent:       #2563EB;
-  --color-accent-light: #EFF6FF;
-  --color-accent-mid:   #DBEAFE;
+  --color-accent:       #2563EB;   /* blue-600 functional action */
+  --color-accent-light: #EFF6FF;   /* blue-50 */
+  --color-accent-mid:   #DBEAFE;   /* blue-100 */
 
-  --color-danger:       #DC2626;
-  --color-danger-light: #FEF2F2;
-  --color-danger-mid:   #FEE2E2;
+  --color-danger:       #DC2626;   /* red-600 disruption status */
+  --color-danger-light: #FEF2F2;   /* red-50 */
+  --color-danger-mid:   #FEE2E2;   /* red-100 */
 
-  --color-success:      #16A34A;
-  --color-success-light:#F0FDF4;
-  --color-success-mid:  #DCFCE7;
+  --color-success:      #16A34A;   /* green-600 approved/guarantee status */
+  --color-success-light:#F0FDF4;   /* green-50 */
+  --color-success-mid:  #DCFCE7;   /* green-100 */
 
-  --color-warning:      #D97706;
-  --color-warning-light:#FFFBEB;
-  --color-warning-mid:  #FEF3C7;
-
-  /* ── Legacy SAP dark tokens (used by dark-mode panels: RecoveryComparison,
-         WorkforceRosterView, AuditLedgerView, AgentTimeline etc.)
-         Keep these as DARK values so dark panel components render correctly. ─ */
-  --color-sap-dark:    #0F172A;   /* slate-950 — dark panel background */
-  --color-sap-card:    #1E293B;   /* slate-800 — dark card surface      */
-  --color-sap-border:  #334155;   /* slate-700 — dark border            */
-  --color-sap-muted:   #94A3B8;   /* slate-400 — dark muted text        */
-  --color-sap-accent:  #2563EB;   /* blue-600                           */
-  --color-sap-gold:    #D97706;   /* amber-600                          */
-  --color-sap-emerald: #10B981;   /* emerald-500                        */
-  --color-sap-crimson: #EF4444;   /* red-500                            */
-  --color-sap-cyan:    #06B6D4;   /* cyan-500                           */
-  --color-sap-purple:  #8B5CF6;   /* violet-500                         */
+  --color-warning:      #D97706;   /* amber-600 warning/mock status */
+  --color-warning-light:#FFFBEB;   /* amber-50 */
+  --color-warning-mid:  #FEF3C7;   /* amber-100 */
 
   /* ── Typography ─────────────────────────────────────────────────── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* ── Base (light page) ──────────────────────────────────────────── */
+/* ── Base (Clean Flat Neutral) ─────────────────────────────────── */
 body {
-  background-color: #F8F9FB;
+  background-color: #F8FAFC;
   color: #0F172A;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Light card ─────────────────────────────────────────────────── */
+/* ── Standard Flat Business Card ─────────────────────────────────── */
 .card {
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 12px;
-}
-
-.card-hover {
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.card-hover:hover {
-  border-color: #93C5FD;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
-}
-
-/* ── glass-panel — DARK (used by dark-mode secondary panels) ─────── */
-.glass-panel {
-  background-color: #1E293B;   /* sap-card dark */
-  border: 1px solid #334155;   /* sap-border dark */
-}
-.glass-panel-hover:hover {
-  border-color: #475569;
+  border-radius: 6px;
 }
 
 /* ── Scrollbars ─────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #F1F5F9; }
+::-webkit-scrollbar-track { background: #F8FAFC; }
 ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #2563EB; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
 /* ── Utility ────────────────────────────────────────────────────── */
 .text-balance { text-wrap: balance; }
